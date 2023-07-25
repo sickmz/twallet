@@ -4,8 +4,8 @@
 var TELEGRAM_TOKEN = ''; // Fill with your own Telegram Bot Token ID
 var SHEET_ID = ''; // Fill with Google Spreadsheet ID  
 var WEBAPP_URL = ''; // Fill with your google webapp address
-var userId = "" // Fill with your own categories and section
-var categories = {
+var userId = ""; // Fill with your telegram user ID
+var categories = { // Fill with your own categories and section
   'house': ['gas', 'water', 'tax'],
   'food': ['groceries', 'delivery'],
   'finance': ['brokers', 'banks', 'exchanges']
