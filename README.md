@@ -1,12 +1,9 @@
 # simple-expenses
 apps script to save your personal expenses on a google sheet through a telegram bot (categories and sections are concatenated lists dependent on each other)
 
-#Demo
-
+# Demo
 
 https://github.com/sickmz/simple-expenses/assets/24682196/c7d8484a-67cd-454f-8f6a-5d10563f00cc
-
-
 
 #  Installation
 * Create a generic google sheet and copy the spreedsheet ID
