@@ -1,6 +1,6 @@
 // ---------------------------------------------------------------------------------------------------
 // Script initialization
-// ---------------------------------------------------------------------------------------------------
+
 var TELEGRAM_TOKEN = ''; // Fill with your own Telegram Bot Token ID
 var SHEET_ID = ''; // Fill with Google Spreadsheet ID  
 var SHEET_NAME = ''; // Fill with Google Sheet name
@@ -11,11 +11,7 @@ var categories = { // Fill with your own categories and section
   'food': ['groceries', 'delivery'],
   'finance': ['brokers', 'banks', 'exchanges']
 };
-
- // PSA: set the name of the sheet where you intend to save the data in row 25 and 135
- // ---------------------------------------------------------------------------------------------------
- // Script initialization finish
- // ---------------------------------------------------------------------------------------------------
+// ---------------------------------------------------------------------------------------------------
 
 function setWebhook() {
   var url = 'https://api.telegram.org/bot' + TELEGRAM_TOKEN + '/setWebhook?url=' + WEBAPP_URL;
