@@ -30,7 +30,6 @@ Apps Script to save and delete personal expenses on a Google Sheet through a tel
   - Enter all the tokens/IDs saved in the previous steps
   - To extract your telegram ID and protect the bot from access by other users you can use @userinfobot
   - Customize categories and sections
-  - Remember to set the name of the google sheet in which you want to save the data (line 70)
 * Update App script deployment:
   - Click on **Execute deployment**
   - Click on **Manage deployment**
