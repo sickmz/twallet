@@ -1,8 +1,8 @@
 # simple-expenses
 Apps Script to save and delete personal expenses on a Google Sheet through a telegram bot (categories and sections are dependent lists with conditional validation)
 
-- On entry, category and section are two inline keyboards with conditional validation 
-- Expense deletion allows you to delete one of the last 5 expenses recorded through an inline keyboard
+- Category and section are two inline keyboards with conditional validation (the section depends on the chosen category)
+- Expense deletion allows you to delete one of the last *N* expenses recorded through an inline keyboard
 - Highly customizable categories and sections
 - Secure and controlled access through ID control
 
