@@ -3,6 +3,7 @@
 // ---------------------------------------------------------------------------------------------------
 var TELEGRAM_TOKEN = ''; // Fill with your own Telegram Bot Token ID
 var SHEET_ID = ''; // Fill with Google Spreadsheet ID  
+var SHEET_NAME = ''; // Fill with Google Sheet name
 var WEBAPP_URL = ''; // Fill with your google webapp address
 var userId = ""; // Fill with your telegram user ID
 var categories = { // Fill with your own categories and section
@@ -23,7 +24,7 @@ function setWebhook() {
 }
 
 function getLastFiveExpenses() {
-  var sheet = SpreadsheetApp.openById(SHEET_ID).getSheetByName('Raw Expenses'); // change this
+  var sheet = SpreadsheetApp.openById(SHEET_ID).getSheetByName(SHEET_NAME);
   var numRows = sheet.getLastRow();
   var dataRange = sheet.getRange(numRows - 4, 2, 5, 3);
   var data = dataRange.getValues();
@@ -85,7 +86,7 @@ function doPost(e) {
       var rowIndices = expensesData.rowIndices;
       
       if (rowIndices.includes(expenseIndex)) {
-        var sheet = SpreadsheetApp.openById(SHEET_ID).getSheetByName('Raw Expenses');
+        var sheet = SpreadsheetApp.openById(SHEET_ID).getSheetByName(SHEET_NAME);
         sheet.deleteRow(expenseIndex);
         
         sendTelegramMessage(chatId, 'Expenses successfully eliminated! ✔️');
@@ -130,7 +131,7 @@ function doPost(e) {
         var price = message.text.replace(".", ",");
         var fullDate = Utilities.formatDate(new Date(), "GMT+1", "dd/MM/yyyy");
 
-        var sheet = SpreadsheetApp.openById(SHEET_ID).getSheetByName('Raw Expenses'); // change this
+        var sheet = SpreadsheetApp.openById(SHEET_ID).getSheetByName(SHEET_NAME);
         sheet.appendRow([month, category, section, price, fullDate]);
         
         sendTelegramMessage(chatId, 'Spesa aggiunta con successo! ✔️');
