@@ -1,5 +1,10 @@
 # simple-expenses
-apps script to save your personal expenses on a google sheet through a telegram bot (categories and sections are concatenated lists dependent on each other)
+Apps Script to save and delete personal expenses on a Google Sheet through a telegram bot (categories and sections are dependent lists with conditional validation)
+
+- On entry, category and section are two inline keyboards with conditional validation 
+- Expense deletion allows you to delete one of the last 5 expenses recorded through an inline keyboard
+- Highly customizable categories and sections
+- Secure and controlled access through ID control
 
 # Demo
 
@@ -36,3 +41,5 @@ https://github.com/sickmz/simple-expenses/assets/24682196/c7d8484a-67cd-454f-8f6
 * Execute  *setWebhook* functions
 * Enjoy
 
+# Thanks
+- R3D4NG3L per la verifica dell'ID {checkUserAutentication()}
