@@ -7,9 +7,8 @@ Apps Script to save and delete personal expenses on a Google Sheet through a tel
 - Secure and controlled access through ID control
 
 # Demo
-
-https://github.com/sickmz/simple-expenses/assets/24682196/c7d8484a-67cd-454f-8f6a-5d10563f00cc
-
+..coming
+  
 #  Installation
 * Create a generic google sheet and copy the spreedsheet ID
 * Create a Telegram bot via @BotFather and get the token
@@ -42,4 +41,4 @@ https://github.com/sickmz/simple-expenses/assets/24682196/c7d8484a-67cd-454f-8f6
 * Enjoy
 
 # Thanks
-- R3D4NG3L per la verifica dell'ID {checkUserAutentication()}
+- R3D4NG3L for the telegram ID verification {checkUserAutentication()}
