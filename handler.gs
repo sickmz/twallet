@@ -71,23 +71,35 @@ function handleCallback(callbackQuery) {
   var action = callbackQueryData[0];
   var actionType = callbackQueryData[1];
 
-  if (action === CallbackTypes.ACTION) {
-    if (actionType === CallbackMenu.ADD) {
-      startExpenseAddingProcess(chatId);
-    } else if (actionType === CallbackMenu.DELETE) {
-      startExpenseDeletingProcess(chatId);
-    }
-  } else if (action === CallbackTypes.DELETE) {
-    var expenseIndex = parseInt(callbackQueryData[1], 10);
-    deleteExpense(chatId, expenseIndex);
-  } else if (action === CallbackTypes.CATEGORY) {
-    var category = callbackQueryData[1];
-    PropertiesService.getScriptProperties().setProperty('category', category);
-    showSections(chatId, category);
-  } else if (action === CallbackTypes.SECTION) {
-    var section = callbackQueryData[1];
-    PropertiesService.getScriptProperties().setProperty('section', section);
-    requestPriceInput(chatId);
+  switch (action) {
+    case CallbackTypes.ACTION:
+      if (actionType === CallbackMenu.ADD) {
+        startExpenseAddingProcess(chatId);
+      } else if (actionType === CallbackMenu.DELETE) {
+        startExpenseDeletingProcess(chatId);
+      }
+      break;
+
+    case CallbackTypes.DELETE:
+      var expenseIndex = parseInt(callbackQueryData[1], 10);
+      deleteExpense(chatId, expenseIndex);
+      break;
+
+    case CallbackTypes.CATEGORY:
+      var category = callbackQueryData[1];
+      PropertiesService.getScriptProperties().setProperty('category', category);
+      showSections(chatId, category);
+      break;
+
+    case CallbackTypes.SECTION:
+      var section = callbackQueryData[1];
+      PropertiesService.getScriptProperties().setProperty('section', section);
+      requestPriceInput(chatId);
+      break;
+
+    default:
+      sendTelegramMessage(chatId, '❌ Unknown callback type ❌');
+      break;
   }
 }
 
