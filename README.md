@@ -1,10 +1,11 @@
 # twallet
 Apps Script to save and delete personal expenses on a Google Sheet through a telegram bot (categories and sections are dependent lists with conditional validation)
 
-- Category and section are two inline keyboards with conditional validation (the section depends on the chosen category)
+- Add an expense with a category, section and price (category and section are two inline keyboards with conditional validation, the section depends on the chosen category)
 - Expense deletion allows you to delete one of the last *N* expenses recorded through an inline keyboard
+- Show the total of all expenses by category and by month
 - Highly customizable categories and sections
-- Secure and controlled access through ID control
+- Secure and controlled access through ID control: only your telegram account can interact with the bot
 
 # Demo
 
