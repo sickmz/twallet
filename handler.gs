@@ -19,13 +19,14 @@ var categories = {
 var CallbackMenu = {
   ADD: 'add',
   DELETE: 'delete',
+  SUMMARY: 'summary', 
 };
 
 var CallbackTypes = {
   ACTION: 'action',
   DELETE: 'delete',
   CATEGORY: 'category',
-  SECTION: 'section',
+  SECTION: 'section'
 };
 
 // ---------------------------------------------------------------------------------------------------
@@ -55,6 +56,7 @@ function sendTelegramMessage(chatId, text, options) {
 // ---------------------------------------------------------------------------------------------------
 // Manage POST request
 // ---------------------------------------------------------------------------------------------------
+
 function doPost(e) {
   var update = JSON.parse(e.postData.contents);
 
@@ -77,6 +79,8 @@ function handleCallback(callbackQuery) {
         startExpenseAddingProcess(chatId);
       } else if (actionType === CallbackMenu.DELETE) {
         startExpenseDeletingProcess(chatId);
+      } else if (actionType === CallbackMenu.SUMMARY) { 
+        showExpenseSummary(chatId);
       }
       break;
 
@@ -120,70 +124,13 @@ function handleMessage(message) {
 }
 
 // ---------------------------------------------------------------------------------------------------
-// delete expense: lastEpenses + startDeleting + delete
+// Add expense
 // ---------------------------------------------------------------------------------------------------
-
-function getLastExpenses() {
-  var sheet = getSheet();
-  var numRows = sheet.getLastRow();
-  var dataRange = sheet.getRange(numRows - 4, 2, 5, 4); 
-  var data = dataRange.getValues();
-
-  var rowIndices = [];
-  var expenses = [];
-  for (var i = numRows - 4; i <= numRows; i++) {
-    var expense = data[i - (numRows - 4)];
-    expenses.push(expense);
-    rowIndices.push(i);
-  }
-
-  return { data: expenses, rowIndices: rowIndices };
-}
-
-function startExpenseDeletingProcess(chatId) {
-  var expensesData = getLastExpenses();
-  var inlineKeyboard = expensesData.data.map(function (expense, index) {
-    var longDate = expense[3];
-    var date = new Date(longDate);
-    var shortDate = Utilities.formatDate(date, "GMT", "dd/MM");
-    var expenseText = "🗓️ " + shortDate + ": " + expense[0] + "/" + expense[1] + " - " + expense[2] + " €";
-    return [{ text: expenseText, callback_data: 'delete_' + expensesData.rowIndices[index] }];
-  });
-
-  var options = {
-    reply_markup: JSON.stringify({
-      inline_keyboard: inlineKeyboard
-    })
-  };
-
-  sendTelegramMessage(chatId, 'Choose the expense to be eliminated:', options);
-}
-
-function deleteExpense(chatId, expenseIndex) {
-  var expensesData = getLastExpenses();
-  var rowIndices = expensesData.rowIndices;
-
-  if (rowIndices.includes(expenseIndex)) {
-    var sheet = getSheet();
-    sheet.deleteRow(expenseIndex);
-
-    sendTelegramMessage(chatId, 'Expense successfully eliminated! ✔️');
-  } else {
-    sendTelegramMessage(chatId, '❌ Error: Unable to find the selected expense ❌');
-  }
-}
-
-
-// ---------------------------------------------------------------------------------------------------
-// add expense: lastEpenses + startDeleting + delete
-// ---------------------------------------------------------------------------------------------------
-
 
 function startExpenseAddingProcess(chatId) {
   PropertiesService.getScriptProperties().setProperty('action', CallbackMenu.ADD);
   showCategories(chatId);
 }
-
 
 function showCategories(chatId) {
   var inlineKeyboard = Object.keys(categories).map(function (category) {
@@ -239,8 +186,9 @@ function saveExpense(chatId, price) {
 
 function showMainMenu(chatId) {
   var inlineKeyboard = [
-    [{ text: 'Add expenses', callback_data: 'action_add' }],
-    [{ text: 'Delete expenses', callback_data: 'action_delete' }],
+    [{ text: 'Add expense', callback_data: 'action_add' }],
+    [{ text: 'Delete expense', callback_data: 'action_delete' }],
+    [{ text: 'Expenses summary', callback_data: 'action_summary' }],
   ];
 
   var options = {
@@ -253,7 +201,107 @@ function showMainMenu(chatId) {
 }
 
 // ---------------------------------------------------------------------------------------------------
-// Utilities + Authentication
+// Delete expense
+// ---------------------------------------------------------------------------------------------------
+
+function getLastExpenses() {
+  var sheet = getSheet();
+  var numRows = sheet.getLastRow();
+  var dataRange = sheet.getRange(numRows - 4, 2, 5, 4); 
+  var data = dataRange.getValues();
+
+  var rowIndices = [];
+  var expenses = [];
+  for (var i = numRows - 4; i <= numRows; i++) {
+    var expense = data[i - (numRows - 4)];
+    expenses.push(expense);
+    rowIndices.push(i);
+  }
+
+  return { data: expenses, rowIndices: rowIndices };
+}
+
+function startExpenseDeletingProcess(chatId) {
+  var expensesData = getLastExpenses();
+  var inlineKeyboard = expensesData.data.map(function (expense, index) {
+    var longDate = expense[3];
+    var date = new Date(longDate);
+    var shortDate = Utilities.formatDate(date, "GMT", "dd/MM");
+    var expenseText = "🗓️ " + shortDate + ": " + expense[0] + "/" + expense[1] + " - " + expense[2] + " €";
+    return [{ text: expenseText, callback_data: 'delete_' + expensesData.rowIndices[index] }];
+  });
+
+  var options = {
+    reply_markup: JSON.stringify({
+      inline_keyboard: inlineKeyboard
+    })
+  };
+
+  sendTelegramMessage(chatId, 'Choose the expense to be eliminated:', options);
+}
+
+function deleteExpense(chatId, expenseIndex) {
+  var expensesData = getLastExpenses();
+  var rowIndices = expensesData.rowIndices;
+
+  if (rowIndices.includes(expenseIndex)) {
+    var sheet = getSheet();
+    sheet.deleteRow(expenseIndex);
+
+    sendTelegramMessage(chatId, 'Expense successfully eliminated! ✔️');
+  } else {
+    sendTelegramMessage(chatId, '❌ Error: Unable to find the selected expense ❌');
+  }
+}
+
+// ---------------------------------------------------------------------------------------------------
+// Summary
+// ---------------------------------------------------------------------------------------------------
+
+function showExpenseSummary(chatId) {
+  var sheet = getSheet();
+  var dataRange = sheet.getDataRange();
+  var data = dataRange.getValues();
+
+  var summaryByCategory = {};
+  var summaryByMonth = {};
+
+  for (var category in categories) {
+    summaryByCategory[category] = 0;
+  }
+
+  for (var i = 1; i < data.length; i++) {
+    var expenseCategory = data[i][1];
+    var expenseAmount = parseFloat(data[i][3]);
+    var expenseMonth = data[i][0];
+
+    if (!isNaN(expenseAmount)) {
+      summaryByCategory[expenseCategory] += expenseAmount;
+
+      if (!summaryByMonth[expenseMonth]) {
+        summaryByMonth[expenseMonth] = 0;
+      }
+      summaryByMonth[expenseMonth] += expenseAmount;
+    }
+  }
+
+  var summaryText = "Expenses summary:\n\nBy catgory:\n";
+  for (var category in summaryByCategory) {
+    var totalAmountCategory = summaryByCategory[category].toFixed(2);
+    summaryText += category + ": " + totalAmountCategory + " €\n";
+  }
+
+  summaryText += "\nBy month:\n";
+  for (var month in summaryByMonth) {
+    var totalAmountMonth = summaryByMonth[month].toFixed(2);
+    summaryText += month + ": " + totalAmountMonth + " €\n";
+  }
+
+  sendTelegramMessage(chatId, summaryText);
+}
+
+// ---------------------------------------------------------------------------------------------------
+// Utilities
 // ---------------------------------------------------------------------------------------------------
 
 function getMonth() {
