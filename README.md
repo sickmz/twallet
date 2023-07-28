@@ -1,4 +1,4 @@
-# simple-expenses
+# twallet
 Apps Script to save and delete personal expenses on a Google Sheet through a telegram bot (categories and sections are dependent lists with conditional validation)
 
 - Category and section are two inline keyboards with conditional validation (the section depends on the chosen category)
