@@ -285,18 +285,26 @@ function showExpenseSummary(chatId) {
     }
   }
 
-  var summaryText = "Expenses summary:\n\nBy catgory:\n";
+  var summaryText = "Expenses summary:\n\nBy category:\n";
+  var totalAmountByCategory = 0;
+
   for (var category in summaryByCategory) {
     var totalAmountCategory = summaryByCategory[category].toFixed(2);
     summaryText += category + ": " + totalAmountCategory + " €\n";
+    totalAmountByCategory += summaryByCategory[category];
   }
 
-  summaryText += "\nBy month:\n";
+  summaryText += "\nTotal: " + totalAmountByCategory.toFixed(2) + " €\n\nBy month:\n";
+  var totalAmountByMonth = 0;
+
   for (var month in summaryByMonth) {
     var totalAmountMonth = summaryByMonth[month].toFixed(2);
     summaryText += month + ": " + totalAmountMonth + " €\n";
+    totalAmountByMonth += summaryByMonth[month];
   }
 
+  summaryText += "\nTotal: " + totalAmountByMonth.toFixed(2) + " €\n";
+  
   sendTelegramMessage(chatId, summaryText);
 }
 
