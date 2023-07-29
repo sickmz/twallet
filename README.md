@@ -9,9 +9,9 @@ Apps Script to save and delete personal expenses on a Google Sheet through a tel
 
 # Demo
 
-| Add expense | Delete expense |
-|:-----------------:|:-----------------:|
-| ![Add expense](add.gif) | ![Delete expense](delete.gif)
+| Add expense | Delete expense | Summary |
+|:-----------------:|:-----------------:|:-----------------:|
+| ![Add expense](demo/add.gif) | ![Delete expense](demo/delete.gif) | ![Summary](demo/summary.gif)
   
 #  Installation
 * Create a generic google sheet and copy the spreedsheet ID
