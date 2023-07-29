@@ -199,9 +199,13 @@ function saveExpense(chatId, price) {
 
 function showMainMenu(chatId) {
   var inlineKeyboard = [
-    [{ text: 'Add expense', callback_data: 'action_add' }],
-    [{ text: 'Delete expense', callback_data: 'action_delete' }],
-    [{ text: 'Expenses summary', callback_data: 'action_summary' }],
+    [
+      { text: 'Add expense', callback_data: 'action_add' },
+      { text: 'Delete expense', callback_data: 'action_delete' }
+    ],
+    [
+      { text: 'Expenses summary', callback_data: 'action_summary' }
+    ]
   ];
 
   var options = {
