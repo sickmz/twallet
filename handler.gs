@@ -194,7 +194,7 @@ function saveExpense(chatId, price) {
   var sheet = getSheet();
   sheet.appendRow([month, category, section, price, fullDate]);
 
-  sendTelegramMessage(chatId, 'Expense saved ✔️');
+  sendTelegramMessage(chatId, 'Category: ' + category + '\nSection: ' + section + '\nPrice: ' + price + '\n\n\Expense saved ✔️');
   PropertiesService.getScriptProperties().deleteAllProperties();
 }
 
