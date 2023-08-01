@@ -18,14 +18,7 @@ var categories = {
 // Callback
 // ---------------------------------------------------------------------------------------------------
 
-var CallbackMenu = {
-  ADD: 'add',
-  DELETE: 'delete',
-  SUMMARY: 'summary', 
-};
-
 var CallbackTypes = {
-  ACTION: 'action',
   DELETE: 'delete',
   CATEGORY: 'category',
   SECTION: 'section'
@@ -86,18 +79,8 @@ function handleCallback(callbackQuery) {
   var callbackQueryData = callbackQuery.data.split('_');
   var chatId = callbackQuery.message.chat.id;
   var action = callbackQueryData[0];
-  var actionType = callbackQueryData[1];
 
   switch (action) {
-    case CallbackTypes.ACTION:
-      if (actionType === CallbackMenu.ADD) {
-        startExpenseAddingProcess(chatId);
-      } else if (actionType === CallbackMenu.DELETE) {
-        startExpenseDeletingProcess(chatId);
-      } else if (actionType === CallbackMenu.SUMMARY) { 
-        showExpenseSummary(chatId);
-      }
-      break;
 
     case CallbackTypes.DELETE:
       var expenseIndex = parseInt(callbackQueryData[1], 10);
@@ -124,21 +107,41 @@ function handleCallback(callbackQuery) {
 
 function handleMessage(message) {
   var chatId = message.chat.id;
+  var text = message.text;
 
-  if (message.reply_to_message && message.reply_to_message.text === 'Enter the price:') {
-    var price = parseFloat(message.text.replace(",", ".").replace(/\s/g, ''));
-
-    if (!isNaN(price && !message.text.includes("."))) {
-      saveExpense(chatId, price);
-    } else {
-      sendTelegramMessage(chatId, "❌ Error: the value entered (" + message.text + ") is not a number! ❌");
-    }
-  } else {
-    if (message.text && message.text === "/start") {
+  switch (text) {
+    case '/cancel':
       showMainMenu(chatId);
-    } else {
-      sendTelegramMessage(chatId, "❌ Error: command not recognized! Use /start to display the main menu. ❌");
-    }
+      break;
+
+    case '🍕 Add expense':
+      startExpenseAddingProcess(chatId);
+      break;
+
+    case '🥊 Delete expense':
+      startExpenseDeletingProcess(chatId);
+      break;
+
+    case '💸 Summary':
+      showExpenseSummary(chatId);
+      break;
+
+    default:
+      if (message.reply_to_message && message.reply_to_message.text === 'Enter the price:') {
+        var price = parseFloat(message.text.replace(",", ".").replace(/\s/g, ''));
+        if (!isNaN(price && !message.text.includes("."))) {
+          saveExpense(chatId, price);
+          break;
+        } else {
+            sendTelegramMessage(chatId, "❌ Error: the value entered (" + message.text + ") is not a number! ❌");  
+            showMainMenu(chatId);
+            break;
+        }  
+      } else { 
+          sendTelegramMessage(chatId, "❌ Error: command (" + message.text + ") not recognized! ❌");
+          showMainMenu(chatId);
+          break;
+        }
   }
 }
 
@@ -147,7 +150,6 @@ function handleMessage(message) {
 // ---------------------------------------------------------------------------------------------------
 
 function startExpenseAddingProcess(chatId) {
-  PropertiesService.getScriptProperties().setProperty('action', CallbackMenu.ADD);
   showCategories(chatId);
 }
 
@@ -207,22 +209,19 @@ function saveExpense(chatId, price) {
 
   sendTelegramMessage(chatId, message);
   PropertiesService.getScriptProperties().deleteAllProperties();
+  showMainMenu(chatId);
 }
 
 function showMainMenu(chatId) {
-  var inlineKeyboard = [
-    [
-      { text: 'Add expense', callback_data: 'action_add' },
-      { text: 'Delete expense', callback_data: 'action_delete' }
-    ],
-    [
-      { text: 'Expenses summary', callback_data: 'action_summary' }
-    ]
-  ];
-
+  var customKeyboard = [
+  ['🍕 Add expense', '🥊 Delete expense'],
+  ['💸 Summary']
+];
   var options = {
     reply_markup: JSON.stringify({
-      inline_keyboard: inlineKeyboard
+      keyboard: customKeyboard,
+      one_time_keyboard: true,
+      resize_keyboard: true
     })
   };
 
@@ -278,14 +277,15 @@ function deleteExpense(chatId, expenseIndex) {
     var section = deletedExpense[1];
     var price = parseFloat(deletedExpense[2]).toFixed(2);
 
-    var message = "Expense successfully eliminated! ✔️\n\n";
+    sheet.deleteRow(expenseIndex);
+
+    var message = "Expense deleted! ✔️\n\n";
     message += "Category: " + category + "\n";
     message += "Section: " + section + "\n";
     message += "Price: " + price + " €";
 
     sendTelegramMessage(chatId, message);
-
-    sheet.deleteRow(expenseIndex);
+    showMainMenu(chatId);
   } else {
     sendTelegramMessage(chatId, '❌ Error: Unable to find the selected expense ❌');
   }
@@ -343,6 +343,7 @@ function showExpenseSummary(chatId) {
   summaryText += "\nTotal: " + totalAmountByMonth.toFixed(2) + " €\n";
   
   sendTelegramMessage(chatId, summaryText);
+  showMainMenu(chatId);
 }
 
 // ---------------------------------------------------------------------------------------------------
