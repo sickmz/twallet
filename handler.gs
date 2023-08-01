@@ -132,9 +132,14 @@ function handleMessage(message) {
       sendTelegramMessage(chatId, "❌ Error: the value entered (" + message.text + ") is not a number! ❌");
     }
   } else {
-    showMainMenu(chatId);
+    if (message.text && message.text.includes("/start")) {
+      showMainMenu(chatId);
+    } else {
+      sendTelegramMessage(chatId, "❌ Error: command not recognized! Use /start to display the main menu. ❌");
+    }
   }
 }
+
 
 // ---------------------------------------------------------------------------------------------------
 // Add expense
