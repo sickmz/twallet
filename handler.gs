@@ -6,7 +6,7 @@ var TELEGRAM_TOKEN = '';
 var SHEET_ID = ''; 
 var SHEET_NAME = ''; 
 var WEBAPP_URL = ''; 
-var userId = ""; 
+var USER_ID = ""; 
 var TIMEZONE = "Europe/Rome";
 var categories = { 
   'house': ['gas', 'water', 'tax'],
