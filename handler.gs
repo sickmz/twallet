@@ -33,7 +33,6 @@ var CallbackTypes = {
 // ---------------------------------------------------------------------------------------------------
 // Telegram API
 // ---------------------------------------------------------------------------------------------------
-
 function setWebhook() {
   try {
     var url = `https://api.telegram.org/bot${TELEGRAM_TOKEN}/setWebhook?url=${WEBAPP_URL}`;
@@ -190,11 +189,17 @@ function saveExpense(chatId, price) {
   var category = PropertiesService.getScriptProperties().getProperty('category');
   var section = PropertiesService.getScriptProperties().getProperty('section');
   var fullDate = Utilities.formatDate(new Date(), "GMT+1", "dd/MM/yyyy");
+  price = parseFloat(price);
 
   var sheet = getSheet();
   sheet.appendRow([month, category, section, price, fullDate]);
 
-  sendTelegramMessage(chatId, 'Category: ' + category + '\nSection: ' + section + '\nPrice: ' + price + '\n\n\Expense saved ✔️');
+  var message = "Expense saved! ✔️\n\n";
+  message += "Category: " + category + "\n";
+  message += "Section: " + section + "\n";
+  message += "Price: " + price + " €";
+
+  sendTelegramMessage(chatId, message);
   PropertiesService.getScriptProperties().deleteAllProperties();
 }
 
@@ -262,9 +267,19 @@ function deleteExpense(chatId, expenseIndex) {
 
   if (rowIndices.includes(expenseIndex)) {
     var sheet = getSheet();
-    sheet.deleteRow(expenseIndex);
+    var deletedExpense = expensesData.data[rowIndices.indexOf(expenseIndex)];
+    var category = deletedExpense[0];
+    var section = deletedExpense[1];
+    var price = parseFloat(deletedExpense[2]).toFixed(2);
 
-    sendTelegramMessage(chatId, 'Expense successfully eliminated! ✔️');
+    var message = "Expense successfully eliminated! ✔️\n\n";
+    message += "Category: " + category + "\n";
+    message += "Section: " + section + "\n";
+    message += "Price: " + price + " €";
+
+    sendTelegramMessage(chatId, message);
+
+    sheet.deleteRow(expenseIndex);
   } else {
     sendTelegramMessage(chatId, '❌ Error: Unable to find the selected expense ❌');
   }
