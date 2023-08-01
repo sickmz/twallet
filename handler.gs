@@ -17,6 +17,7 @@ var categories = {
 // ---------------------------------------------------------------------------------------------------
 // Callback
 // ---------------------------------------------------------------------------------------------------
+
 var CallbackMenu = {
   ADD: 'add',
   DELETE: 'delete',
@@ -33,6 +34,7 @@ var CallbackTypes = {
 // ---------------------------------------------------------------------------------------------------
 // Telegram API
 // ---------------------------------------------------------------------------------------------------
+
 function setWebhook() {
   try {
     var url = `https://api.telegram.org/bot${TELEGRAM_TOKEN}/setWebhook?url=${WEBAPP_URL}`;
@@ -132,14 +134,13 @@ function handleMessage(message) {
       sendTelegramMessage(chatId, "❌ Error: the value entered (" + message.text + ") is not a number! ❌");
     }
   } else {
-    if (message.text && message.text.includes("/start")) {
+    if (message.text && message.text === "/start") {
       showMainMenu(chatId);
     } else {
       sendTelegramMessage(chatId, "❌ Error: command not recognized! Use /start to display the main menu. ❌");
     }
   }
 }
-
 
 // ---------------------------------------------------------------------------------------------------
 // Add expense
