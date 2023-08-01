@@ -7,6 +7,7 @@ var SHEET_ID = '';
 var SHEET_NAME = ''; 
 var WEBAPP_URL = ''; 
 var userId = ""; 
+var TIMEZONE = "Europe/Rome";
 var categories = { 
   'house': ['gas', 'water', 'tax'],
   'food': ['groceries', 'delivery'],
@@ -241,10 +242,8 @@ function getLastExpenses() {
 function startExpenseDeletingProcess(chatId) {
   var expensesData = getLastExpenses();
   var inlineKeyboard = expensesData.data.map(function (expense, index) {
-    var longDate = expense[3];
-    var date = new Date(longDate);
-    var shortDate = Utilities.formatDate(date, "GMT", "dd/MM");
-    var expenseText = "🗓️ " + shortDate + ": " + expense[0] + "/" + expense[1] + " - " + expense[2] + " €";
+    var date = Utilities.formatDate(expense[3], TIMEZONE, "dd/MM")
+    var expenseText = "🗓️ " + date + ": " + expense[0] + "/" + expense[1] + " - " + expense[2] + " €";
     return [{ text: expenseText, callback_data: 'delete_' + expensesData.rowIndices[index] }];
   });
 
