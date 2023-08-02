@@ -5,6 +5,7 @@ Apps Script to save and delete personal expenses on a Google Sheet through a tel
 - Expense deletion allows you to delete one of the last *N* expenses recorded through an inline keyboard
 - Show the total of all expenses by category and by month
 - Highly customizable categories and sections
+- Multilingual support (if you don't find your language and want to contribute open a pull request or contact me on telegram @sickmz))
 - Secure and controlled access through ID control: only your telegram account can interact with the bot
 
 # Demo
