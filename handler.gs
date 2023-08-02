@@ -15,50 +15,7 @@ var categories = {
 };
 
 // ---------------------------------------------------------------------------------------------------
-// Callback
-// ---------------------------------------------------------------------------------------------------
-
-var CallbackTypes = {
-  DELETE: 'delete',
-  CATEGORY: 'category',
-  SECTION: 'section'
-};
-
-// ---------------------------------------------------------------------------------------------------
-// Telegram API
-// ---------------------------------------------------------------------------------------------------
-
-function setWebhook() {
-  try {
-    var url = `https://api.telegram.org/bot${TELEGRAM_TOKEN}/setWebhook?url=${WEBAPP_URL}`;
-    var response = UrlFetchApp.fetch(url);
-  } catch (error) {
-    Logger.log('Error setting up webhook: ' + error.message);
-  }
-}
-
-function sendTelegramMessage(chatId, text, options) {
-  try {
-    options = options || {};
-    options.chat_id = chatId;
-    options.text = text;
-
-    var url = `https://api.telegram.org/bot${TELEGRAM_TOKEN}/sendMessage`;
-    var payload = JSON.stringify(options);
-    var params = {
-      method: 'post',
-      contentType: 'application/json',
-      payload: payload
-    };
-
-    UrlFetchApp.fetch(url, params);
-  } catch (error) {
-    Logger.log('Error sending Telegram message: ' + error.message);
-  }
-}
-
-// ---------------------------------------------------------------------------------------------------
-// Manage POST request
+// Handle POST request
 // ---------------------------------------------------------------------------------------------------
 
 function doPost(e) {
@@ -71,7 +28,7 @@ function doPost(e) {
       handleMessage(update.message);
     }
   } catch (error) {
-    Logger.log('Error handling POST request: ' + error.message);
+    Logger.log('❌ Error handling POST request: ' + error.message + ' ❌');
   }
 }
 
@@ -82,18 +39,18 @@ function handleCallback(callbackQuery) {
 
   switch (action) {
 
-    case CallbackTypes.DELETE:
+    case 'delete':
       var expenseIndex = parseInt(callbackQueryData[1], 10);
       deleteExpense(chatId, expenseIndex);
       break;
 
-    case CallbackTypes.CATEGORY:
+    case 'category':
       var category = callbackQueryData[1];
       PropertiesService.getScriptProperties().setProperty('category', category);
       showSections(chatId, category);
       break;
 
-    case CallbackTypes.SECTION:
+    case 'section':
       var section = callbackQueryData[1];
       PropertiesService.getScriptProperties().setProperty('section', section);
       requestPriceInput(chatId);
@@ -128,8 +85,8 @@ function handleMessage(message) {
 
     default:
       if (message.reply_to_message && message.reply_to_message.text === 'Enter the price:') {
-        var price = parseFloat(message.text.replace(",", ".").replace(/\s/g, ''));
-        if (!isNaN(price && !message.text.includes("."))) {
+        var price = parseFloat(message.text.replace(/[, ]/g, '.'));
+        if (!isNaN(price)) {
           saveExpense(chatId, price);
           break;
         } else {
@@ -196,11 +153,10 @@ function saveExpense(chatId, price) {
   var month = getMonth();
   var category = PropertiesService.getScriptProperties().getProperty('category');
   var section = PropertiesService.getScriptProperties().getProperty('section');
-  var fullDate = Utilities.formatDate(new Date(), "GMT+1", "dd/MM/yyyy");
-  price = parseFloat(price);
+  var date = Utilities.formatDate(new Date(), "GMT+1", "dd/MM/yyyy");
 
   var sheet = getSheet();
-  sheet.appendRow([month, category, section, price, fullDate]);
+  sheet.appendRow([month, category, section, price, date]);
 
   var message = "Expense saved! ✔️\n\n";
   message += "Category: " + category + "\n";
@@ -209,6 +165,7 @@ function saveExpense(chatId, price) {
 
   sendTelegramMessage(chatId, message);
   PropertiesService.getScriptProperties().deleteAllProperties();
+  
   showMainMenu(chatId);
 }
 
@@ -296,54 +253,58 @@ function deleteExpense(chatId, expenseIndex) {
 // ---------------------------------------------------------------------------------------------------
 
 function showExpenseSummary(chatId) {
-  var sheet = getSheet();
-  var dataRange = sheet.getDataRange();
-  var data = dataRange.getValues();
+  try {
+    var sheet = getSheet();
+    var dataRange = sheet.getDataRange();
+    var data = dataRange.getValues();
 
-  var summaryByCategory = {};
-  var summaryByMonth = {};
+    var summaryByCategory = {};
+    var summaryByMonth = {};
 
-  for (var category in categories) {
-    summaryByCategory[category] = 0;
-  }
-
-  for (var i = 1; i < data.length; i++) {
-    var expenseCategory = data[i][1];
-    var expenseAmount = parseFloat(data[i][3]);
-    var expenseMonth = data[i][0];
-
-    if (!isNaN(expenseAmount)) {
-      summaryByCategory[expenseCategory] += expenseAmount;
-
-      if (!summaryByMonth[expenseMonth]) {
-        summaryByMonth[expenseMonth] = 0;
-      }
-      summaryByMonth[expenseMonth] += expenseAmount;
+    for (var category in categories) {
+      summaryByCategory[category] = 0;
     }
+
+    for (var i = 1; i < data.length; i++) {
+      var expenseCategory = data[i][1];
+      var expenseAmount = parseFloat(data[i][3]);
+      var expenseMonth = data[i][0];
+
+      if (!isNaN(expenseAmount)) {
+        summaryByCategory[expenseCategory] += expenseAmount;
+
+        if (!summaryByMonth[expenseMonth]) {
+          summaryByMonth[expenseMonth] = 0;
+        }
+        summaryByMonth[expenseMonth] += expenseAmount;
+      }
+    }
+
+    var summaryText = "Expenses summary:\n\nBy category:\n";
+    var totalAmountByCategory = 0;
+
+    for (var category in summaryByCategory) {
+      var totalAmountCategory = summaryByCategory[category].toFixed(2);
+      summaryText += category + ": " + totalAmountCategory + " €\n";
+      totalAmountByCategory += summaryByCategory[category];
+    }
+
+    summaryText += "\nTotal: " + totalAmountByCategory.toFixed(2) + " €\n\nBy month:\n";
+    var totalAmountByMonth = 0;
+
+    for (var month in summaryByMonth) {
+      var totalAmountMonth = summaryByMonth[month].toFixed(2);
+      summaryText += month + ": " + totalAmountMonth + " €\n";
+      totalAmountByMonth += summaryByMonth[month];
+    }
+
+    summaryText += "\nTotal: " + totalAmountByMonth.toFixed(2) + " €\n";
+
+    sendTelegramMessage(chatId, summaryText);
+    showMainMenu(chatId);
+  } catch (error) {
+    Logger.log('Error showing expense summary: ' + error.message);
   }
-
-  var summaryText = "Expenses summary:\n\nBy category:\n";
-  var totalAmountByCategory = 0;
-
-  for (var category in summaryByCategory) {
-    var totalAmountCategory = summaryByCategory[category].toFixed(2);
-    summaryText += category + ": " + totalAmountCategory + " €\n";
-    totalAmountByCategory += summaryByCategory[category];
-  }
-
-  summaryText += "\nTotal: " + totalAmountByCategory.toFixed(2) + " €\n\nBy month:\n";
-  var totalAmountByMonth = 0;
-
-  for (var month in summaryByMonth) {
-    var totalAmountMonth = summaryByMonth[month].toFixed(2);
-    summaryText += month + ": " + totalAmountMonth + " €\n";
-    totalAmountByMonth += summaryByMonth[month];
-  }
-
-  summaryText += "\nTotal: " + totalAmountByMonth.toFixed(2) + " €\n";
-  
-  sendTelegramMessage(chatId, summaryText);
-  showMainMenu(chatId);
 }
 
 // ---------------------------------------------------------------------------------------------------
@@ -352,20 +313,7 @@ function showExpenseSummary(chatId) {
 
 function getMonth() {
   var date = new Date();
-  const months = [
-    'Gennaio',
-    'Febbraio',
-    'Marzo',
-    'Aprile',
-    'Maggio',
-    'Giugno',
-    'Luglio',
-    'Agosto',
-    'Settembre',
-    'Ottobre',
-    'Novembre',
-    'Dicembre',
-  ];
+  const months = ['Gennaio', 'Febbraio', 'Marzo', 'Aprile', 'Maggio', 'Giugno', 'Luglio', 'Agosto', 'Settembre', 'Ottobre', 'Novembre', 'Dicembre'];
   let month = months[date.getMonth()];
   
   return month;
@@ -381,4 +329,37 @@ function checkUserAuthentication(id) {
 
 function getSheet() {
   return SpreadsheetApp.openById(SHEET_ID).getSheetByName(SHEET_NAME);
+}
+
+// ---------------------------------------------------------------------------------------------------
+// Telegram API
+// ---------------------------------------------------------------------------------------------------
+
+function setWebhook() {
+  try {
+    var url = `https://api.telegram.org/bot${TELEGRAM_TOKEN}/setWebhook?url=${WEBAPP_URL}`;
+    var response = UrlFetchApp.fetch(url);
+  } catch (error) {
+    Logger.log('Error setting up webhook: ' + error.message);
+  }
+}
+
+function sendTelegramMessage(chatId, text, options) {
+  try {
+    options = options || {};
+    options.chat_id = chatId;
+    options.text = text;
+
+    var url = `https://api.telegram.org/bot${TELEGRAM_TOKEN}/sendMessage`;
+    var payload = JSON.stringify(options);
+    var params = {
+      method: 'post',
+      contentType: 'application/json',
+      payload: payload
+    };
+
+    UrlFetchApp.fetch(url, params);
+  } catch (error) {
+    Logger.log('Error sending Telegram message: ' + error.message);
+  }
 }
