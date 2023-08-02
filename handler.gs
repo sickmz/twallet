@@ -14,6 +14,34 @@ var categories = {
   'finance': ['brokers', 'banks', 'exchanges']
 };
 
+var LANGUAGE = PropertiesService.getScriptProperties().getProperty('LANGUAGE') || 'english';
+var translations = {
+  'italian': {
+    'choose_option': 'Scegli un\'opzione:',
+    'choose_category': 'Scegli una categoria:',
+    'choose_section': 'Scegli una sezione:',
+    'enter_price': 'Inserisci il prezzo:',
+    'expense_saved': 'Spesa salvata! ✔️\n\nCategoria: {category}\nSezione: {section}\nPrezzo: {price} €',
+    'expense_deleted': 'Spesa eliminata! ✔️\n\nCategoria: {category}\nSezione: {section}\nPrezzo: {price} €',
+    'add_expense': 'Aggiungi spesa',
+    'delete_expense': 'Elimina spesa',
+    'show_summary': 'Riassunto',
+    'enter_price': 'Inserisci il prezzo:',
+  },
+  'english': {
+    'choose_option': 'Choose an option:',
+    'choose_category': 'Choose a category:',
+    'choose_section': 'Choose a section:',
+    'enter_price': 'Enter the price:',
+    'expense_saved': 'Expense saved! ✔️\n\nCategory: {category}\nSection: {section}\nPrice: {price} €',
+    'expense_deleted': 'Expense deleted! ✔️\n\nCategory: {category}\nSection: {section}\nPrice: {price} €',
+    'add_expense': 'Add expense',
+    'delete_expense': 'Delete expense',
+    'show_summary': 'Summary',
+    'enter_price': 'Enter the price:',
+  }
+};
+
 // ---------------------------------------------------------------------------------------------------
 // Handle POST request
 // ---------------------------------------------------------------------------------------------------
@@ -55,6 +83,11 @@ function handleCallback(callbackQuery) {
       PropertiesService.getScriptProperties().setProperty('section', section);
       requestPriceInput(chatId);
       break;
+    
+    case 'language':
+      var language = callbackQueryData[1];
+      setLanguage(chatId, language);
+      break;
 
     default:
       sendTelegramMessage(chatId, '❌ Unknown callback type ❌');
@@ -63,28 +96,38 @@ function handleCallback(callbackQuery) {
 }
 
 function handleMessage(message) {
+  var language = translations[LANGUAGE];
   var chatId = message.chat.id;
   var text = message.text;
 
   switch (text) {
+    
+    case '/start':
+      showWelcomeMessage(chatId);
+      break;
+
     case '/cancel':
       showMainMenu(chatId);
       break;
 
-    case '🍕 Add expense':
+    case '/language':
+      showLanguageOptions(chatId);
+      break;
+
+    case '🍕 ' + language['add_expense']:
       startExpenseAddingProcess(chatId);
       break;
 
-    case '🥊 Delete expense':
+    case '🥊 ' + language['delete_expense']:
       startExpenseDeletingProcess(chatId);
       break;
 
-    case '💸 Summary':
+    case '💸 ' + language['show_summary']:
       showExpenseSummary(chatId);
       break;
 
     default:
-      if (message.reply_to_message && message.reply_to_message.text === 'Enter the price:') {
+      if (message.reply_to_message && message.reply_to_message.text === language['enter_price']) {
         var price = parseFloat(message.text.replace(/[, ]/g, '.'));
         if (!isNaN(price)) {
           saveExpense(chatId, price);
@@ -93,7 +136,7 @@ function handleMessage(message) {
             sendTelegramMessage(chatId, "❌ Error: the value entered (" + message.text + ") is not a number! ❌");  
             showMainMenu(chatId);
             break;
-        }  
+          }  
       } else { 
           sendTelegramMessage(chatId, "❌ Error: command (" + message.text + ") not recognized! ❌");
           showMainMenu(chatId);
@@ -111,6 +154,7 @@ function startExpenseAddingProcess(chatId) {
 }
 
 function showCategories(chatId) {
+  var language = translations[LANGUAGE];
   var inlineKeyboard = Object.keys(categories).map(function (category) {
     return [{ text: category, callback_data: 'category_' + category }];
   });
@@ -121,10 +165,11 @@ function showCategories(chatId) {
     })
   };
 
-  sendTelegramMessage(chatId, 'Choose a category:', options);
+  sendTelegramMessage(chatId, language['choose_category'], options);
 }
 
 function showSections(chatId, category) {
+  var language = translations[LANGUAGE];
   var sections = categories[category];
   var inlineKeyboard = sections.map(function (section) {
     return [{ text: section, callback_data: 'section_' + section }];
@@ -132,21 +177,22 @@ function showSections(chatId, category) {
 
   var options = {
     reply_markup: JSON.stringify({
-      inline_keyboard: inlineKeyboard
+       inline_keyboard: inlineKeyboard
     })
   };
 
-  sendTelegramMessage(chatId, 'Choose a section:', options);
+  sendTelegramMessage(chatId, language['choose_section'], options);
 }
 
 function requestPriceInput(chatId) {
+  var language = translations[LANGUAGE];
   var options = {
     reply_markup: JSON.stringify({
       force_reply: true
     })
   };
 
-  sendTelegramMessage(chatId, 'Enter the price:', options);
+  sendTelegramMessage(chatId, language['enter_price'], options);
 }
 
 function saveExpense(chatId, price) {
@@ -158,21 +204,25 @@ function saveExpense(chatId, price) {
   var sheet = getSheet();
   sheet.appendRow([month, category, section, price, date]);
 
-  var message = "Expense saved! ✔️\n\n";
-  message += "Category: " + category + "\n";
-  message += "Section: " + section + "\n";
-  message += "Price: " + price + " €";
+  var language = translations[LANGUAGE];
+  var message = language['expense_saved']
+    .replace('{category}', category)
+    .replace('{section}', section)
+    .replace('{price}', price.toFixed(2));
 
   sendTelegramMessage(chatId, message);
-  PropertiesService.getScriptProperties().deleteAllProperties();
+
+  PropertiesService.getScriptProperties().deleteProperty('category');
+  PropertiesService.getScriptProperties().deleteProperty('section');
   
   showMainMenu(chatId);
 }
 
 function showMainMenu(chatId) {
+  var language = translations[LANGUAGE];
   var customKeyboard = [
-  ['🍕 Add expense', '🥊 Delete expense'],
-  ['💸 Summary']
+  ['🍕 ' + language['add_expense'], '🥊 ' + language['delete_expense']],
+  ['💸 ' + language['show_summary']]
 ];
   var options = {
     reply_markup: JSON.stringify({
@@ -182,7 +232,7 @@ function showMainMenu(chatId) {
     })
   };
 
-  sendTelegramMessage(chatId, 'Choose an option:', options);
+  sendTelegramMessage(chatId, language['choose_option'], options);
 }
 
 // ---------------------------------------------------------------------------------------------------
@@ -236,16 +286,16 @@ function deleteExpense(chatId, expenseIndex) {
 
     sheet.deleteRow(expenseIndex);
 
-    var message = "Expense deleted! ✔️\n\n";
-    message += "Category: " + category + "\n";
-    message += "Section: " + section + "\n";
-    message += "Price: " + price + " €";
+    var language = translations[LANGUAGE];
+    var message = language['expense_deleted']
+    .replace('{category}', category)
+    .replace('{section}', section)
+    .replace('{price}', price);
 
     sendTelegramMessage(chatId, message);
     showMainMenu(chatId);
-  } else {
-    sendTelegramMessage(chatId, '❌ Error: Unable to find the selected expense ❌');
-  }
+
+  } else { sendTelegramMessage(chatId, '❌ Error: Unable to find the selected expense ❌'); }
 }
 
 // ---------------------------------------------------------------------------------------------------
@@ -280,7 +330,7 @@ function showExpenseSummary(chatId) {
       }
     }
 
-    var summaryText = "Expenses summary:\n\nBy category:\n";
+    var summaryText = "<b>By category</b>\n\n";
     var totalAmountByCategory = 0;
 
     for (var category in summaryByCategory) {
@@ -289,7 +339,7 @@ function showExpenseSummary(chatId) {
       totalAmountByCategory += summaryByCategory[category];
     }
 
-    summaryText += "\nTotal: " + totalAmountByCategory.toFixed(2) + " €\n\nBy month:\n";
+    summaryText += "\nTotal: " + totalAmountByCategory.toFixed(2) + " €\n\n<b>By month</b>\n\n";
     var totalAmountByMonth = 0;
 
     for (var month in summaryByMonth) {
@@ -300,7 +350,11 @@ function showExpenseSummary(chatId) {
 
     summaryText += "\nTotal: " + totalAmountByMonth.toFixed(2) + " €\n";
 
-    sendTelegramMessage(chatId, summaryText);
+    var options = {
+      parse_mode: 'HTML' // Add this option to indicate HTML formatting
+    };
+
+    sendTelegramMessage(chatId, summaryText, options);
     showMainMenu(chatId);
   } catch (error) {
     Logger.log('Error showing expense summary: ' + error.message);
@@ -329,6 +383,47 @@ function checkUserAuthentication(id) {
 
 function getSheet() {
   return SpreadsheetApp.openById(SHEET_ID).getSheetByName(SHEET_NAME);
+}
+
+function showWelcomeMessage(chatId) {
+  var message = '👋 Hi, my name is twallet and I can help you keeping track of your expenses!';
+  sendTelegramMessage(chatId, message);
+  var message = '✅ What you need to know\n\n';
+  message += '1️⃣ Only you can interact with your bot, thanks to telegram ID-based authentication\n\n';
+  message += '2️⃣ You can add everyday expenses through categories and sections with convenient inline keyboardsn\n\n';
+  message += '3️⃣ You can fully customize categories and sections\n\n';
+  message += '4️⃣ You can delete one of the last 5 expenses entered\n\n';
+  message += '5️⃣ You can check how much you\'ve spent since the beginning of the year, both by month and by category';
+  sendTelegramMessage(chatId, message);
+  
+  showMainMenu(chatId);
+}
+
+// ---------------------------------------------------------------------------------------------------
+// Language
+// ---------------------------------------------------------------------------------------------------
+
+function showLanguageOptions(chatId) {
+  var inlineKeyboard = [
+    [{ text: (LANGUAGE === 'italian' ? '✅🇮🇹 Italian' : '🇮🇹 Italian'), callback_data: 'language_italian' }],
+    [{ text: (LANGUAGE === 'english' ? '✅🇬🇧 English' : '🇬🇧 English'), callback_data: 'language_english' }]
+  ];
+
+  var options = {
+    reply_markup: JSON.stringify({
+      inline_keyboard: inlineKeyboard
+    })
+  };
+
+  sendTelegramMessage(chatId, '🌍 Use the buttons down here to change the bot\'s language:', options);
+}
+
+function setLanguage(chatId, language) {
+  LANGUAGE = language;
+  PropertiesService.getScriptProperties().setProperty('LANGUAGE', language); 
+  var message = 'Language set to: ' + language + '!';
+  sendTelegramMessage(chatId, message);
+  showMainMenu(chatId);
 }
 
 // ---------------------------------------------------------------------------------------------------
