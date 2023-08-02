@@ -335,7 +335,7 @@ function showExpenseSummary(chatId) {
       }
     }
 
-    var summaryText = "*By category*\n\n";
+    var summaryText = "By category\n\n";
     var totalAmountByCategory = 0;
 
     for (var category in summaryByCategory) {
@@ -344,7 +344,7 @@ function showExpenseSummary(chatId) {
       totalAmountByCategory += summaryByCategory[category];
     }
 
-    summaryText += "\n<b>Total</b>: " + totalAmountByCategory.toFixed(2) + " €\n\nBy month\n\n";
+    summaryText += "\Total: " + totalAmountByCategory.toFixed(2) + " €\n\nBy month\n\n";
     var totalAmountByMonth = 0;
 
     for (var month in summaryByMonth) {
