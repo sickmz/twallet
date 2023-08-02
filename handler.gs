@@ -27,6 +27,7 @@ var translations = {
     'delete_expense': 'Elimina spesa',
     'show_summary': 'Riassunto',
     'enter_price': 'Inserisci il prezzo:',
+    'canceled': '👍 Interrotto',
   },
   'english': {
     'choose_option': 'Choose an option:',
@@ -39,6 +40,8 @@ var translations = {
     'delete_expense': 'Delete expense',
     'show_summary': 'Summary',
     'enter_price': 'Enter the price:',
+    'canceled': '👍 Canceled',
+
   }
 };
 
@@ -107,7 +110,11 @@ function handleMessage(message) {
       break;
 
     case '/cancel':
-      showMainMenu(chatId);
+      showMainMenu(chatId, language['canceled']);
+      break;
+
+    case '/help':
+      showHelpMessage(chatId);
       break;
 
     case '/language':
@@ -218,7 +225,7 @@ function saveExpense(chatId, price) {
   showMainMenu(chatId);
 }
 
-function showMainMenu(chatId) {
+function showMainMenu(chatId, message) {
   var language = translations[LANGUAGE];
   var customKeyboard = [
   ['🍕 ' + language['add_expense'], '🥊 ' + language['delete_expense']],
@@ -232,7 +239,7 @@ function showMainMenu(chatId) {
     })
   };
 
-  sendTelegramMessage(chatId, language['choose_option'], options);
+  sendTelegramMessage(chatId, message, options);
 }
 
 // ---------------------------------------------------------------------------------------------------
@@ -330,7 +337,7 @@ function showExpenseSummary(chatId) {
       }
     }
 
-    var summaryText = "<b>By category</b>\n\n";
+    var summaryText = "By category\n\n";
     var totalAmountByCategory = 0;
 
     for (var category in summaryByCategory) {
@@ -339,7 +346,7 @@ function showExpenseSummary(chatId) {
       totalAmountByCategory += summaryByCategory[category];
     }
 
-    summaryText += "\nTotal: " + totalAmountByCategory.toFixed(2) + " €\n\n<b>By month</b>\n\n";
+    summaryText += "\nTotal: " + totalAmountByCategory.toFixed(2) + " €\n\nBy month\n\n";
     var totalAmountByMonth = 0;
 
     for (var month in summaryByMonth) {
@@ -354,8 +361,7 @@ function showExpenseSummary(chatId) {
       parse_mode: 'HTML' // Add this option to indicate HTML formatting
     };
 
-    sendTelegramMessage(chatId, summaryText, options);
-    showMainMenu(chatId);
+    showMainMenu(chatId, summaryText);
   } catch (error) {
     Logger.log('Error showing expense summary: ' + error.message);
   }
@@ -394,9 +400,20 @@ function showWelcomeMessage(chatId) {
   message += '3️⃣ You can fully customize categories and sections\n\n';
   message += '4️⃣ You can delete one of the last 5 expenses entered\n\n';
   message += '5️⃣ You can check how much you\'ve spent since the beginning of the year, both by month and by category';
-  sendTelegramMessage(chatId, message);
   
-  showMainMenu(chatId);
+  showMainMenu(chatId, message);
+}
+
+function showHelpMessage(chatId) {
+  var message = '⚙️ Commands\n\n';
+  message += '• /start: show the welcome message \n';
+  message += '• /help: open this message and get help \n';
+  message += '• /cancel: cancel the current command \n';
+  message += '• /language: change the bot\'s language \n\n';
+  message += '👤 Contact me\n\n';
+  message += '• @sickmz';
+
+  showMainMenu(chatId, message);
 }
 
 // ---------------------------------------------------------------------------------------------------
@@ -422,8 +439,7 @@ function setLanguage(chatId, language) {
   LANGUAGE = language;
   PropertiesService.getScriptProperties().setProperty('LANGUAGE', language); 
   var message = 'Language set to: ' + language + '!';
-  sendTelegramMessage(chatId, message);
-  showMainMenu(chatId);
+  showMainMenu(chatId, message);
 }
 
 // ---------------------------------------------------------------------------------------------------
