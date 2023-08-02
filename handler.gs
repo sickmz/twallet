@@ -217,28 +217,27 @@ function saveExpense(chatId, price) {
     .replace('{section}', section)
     .replace('{price}', price.toFixed(2));
 
-  sendTelegramMessage(chatId, message);
+  showMainMenu(chatId, message);
 
   PropertiesService.getScriptProperties().deleteProperty('category');
   PropertiesService.getScriptProperties().deleteProperty('section');
   
-  showMainMenu(chatId);
 }
 
 function showMainMenu(chatId, message) {
   var language = translations[LANGUAGE];
   var customKeyboard = [
   ['🍕 ' + language['add_expense'], '🥊 ' + language['delete_expense']],
-  ['💸 ' + language['show_summary']]
-];
+  ['💸 ' + language['show_summary']]];
+
   var options = {
-    reply_markup: JSON.stringify({
-      keyboard: customKeyboard,
-      one_time_keyboard: true,
-      resize_keyboard: true
+  reply_markup: JSON.stringify({
+    keyboard: customKeyboard,
+    one_time_keyboard: true,
+    resize_keyboard: true,
     })
   };
-
+  
   sendTelegramMessage(chatId, message, options);
 }
 
@@ -299,8 +298,7 @@ function deleteExpense(chatId, expenseIndex) {
     .replace('{section}', section)
     .replace('{price}', price);
 
-    sendTelegramMessage(chatId, message);
-    showMainMenu(chatId);
+    showMainMenu(chatId, message);
 
   } else { sendTelegramMessage(chatId, '❌ Error: Unable to find the selected expense ❌'); }
 }
@@ -337,7 +335,7 @@ function showExpenseSummary(chatId) {
       }
     }
 
-    var summaryText = "By category\n\n";
+    var summaryText = "*By category*\n\n";
     var totalAmountByCategory = 0;
 
     for (var category in summaryByCategory) {
@@ -346,7 +344,7 @@ function showExpenseSummary(chatId) {
       totalAmountByCategory += summaryByCategory[category];
     }
 
-    summaryText += "\nTotal: " + totalAmountByCategory.toFixed(2) + " €\n\nBy month\n\n";
+    summaryText += "\n<b>Total</b>: " + totalAmountByCategory.toFixed(2) + " €\n\nBy month\n\n";
     var totalAmountByMonth = 0;
 
     for (var month in summaryByMonth) {
@@ -356,11 +354,7 @@ function showExpenseSummary(chatId) {
     }
 
     summaryText += "\nTotal: " + totalAmountByMonth.toFixed(2) + " €\n";
-
-    var options = {
-      parse_mode: 'HTML' // Add this option to indicate HTML formatting
-    };
-
+    
     showMainMenu(chatId, summaryText);
   } catch (error) {
     Logger.log('Error showing expense summary: ' + error.message);
@@ -438,7 +432,7 @@ function showLanguageOptions(chatId) {
 function setLanguage(chatId, language) {
   LANGUAGE = language;
   PropertiesService.getScriptProperties().setProperty('LANGUAGE', language); 
-  var message = 'Language set to: ' + language + '!';
+  var message = 'Language set to: ' + language + '';
   showMainMenu(chatId, message);
 }
 
