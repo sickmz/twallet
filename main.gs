@@ -84,19 +84,19 @@ function handleMessage(message) {
 
     default:
       if (message.reply_to_message && message.reply_to_message.text === language['enter_price']) {
-        var price = parseFloat(message.text.replace(/[, ]/g, '.'));
-        if (!isNaN(price)) {
-          saveExpense(chatId, price);
-          break;
-        } else {
-            sendTelegramMessage(chatId, "❌ Error: the value entered (" + message.text + ") is not a number! ❌");  
-            showMainMenu(chatId);
-            break;
-          }  
-      } else { 
-          sendTelegramMessage(chatId, "❌ Error: command (" + message.text + ") not recognized! ❌");
-          showMainMenu(chatId);
+        if (/^[0-9.,]+$/.test(message.text)) {
+        var price = parseFloat(message.text.replace(',', '.'));
+        saveExpense(chatId, price);
+        break;
+      } else {
+          var error = "❌ Error: the value entered (" + message.text + ") contains invalid characters! ❌";  
+          showMainMenu(chatId, error);
           break;
         }
-  }
+      }  else { 
+          var error = "❌ Error: command (" + message.text + ") not recognized! ❌";
+          showMainMenu(chatId, error);
+          break;
+        }
+    }
 }
