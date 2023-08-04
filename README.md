@@ -32,8 +32,8 @@ Apps Script to save and delete personal expenses on a Google Sheet through a tel
     - Save the webapp url generated (e.g. https://script.google.com/macros/s/AKfycbwHkLLHeAY-07_A2dmXftSX0JNR8gTpeREQmzo2j2aWmItIuSsFSYzlB1bJNw0Dovd3qw/exec)
     - Click on **Finish**
 * App Script personalization
-  - Enter all the tokens/IDs saved in the previous steps
-  - To extract your telegram ID and protect the bot from access by other users you can use @userinfobot
+  - Put all the tokens/IDs saved in the previous steps into the _parameters.gs_ script
+  - To extract your telegram ID and protect the bot from access by other users you can use [userInfoBot](https://t.me/@userinfobot)
   - Customize categories and sections
 * Update App script deployment:
   - Click on **Execute deployment**
