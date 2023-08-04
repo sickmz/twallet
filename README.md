@@ -1,48 +1,81 @@
 # twallet
-Apps Script to save and delete personal expenses on a Google Sheet through a telegram bot (categories and sections are dependent lists with conditional validation)
 
-- Add an expense with a category, section and price (category and section are two inline keyboards with conditional validation, the section depends on the chosen category)
-- Expense deletion allows you to delete one of the last *N* expenses recorded through an inline keyboard
-- Show the total of all expenses by category and by month
-- Highly customizable categories and sections
-- Multilingual support (if you don't find your language and want to contribute open a pull request or [contact me](https://t.me/sickmz))
-- Secure and controlled access through ID control: only your telegram account can interact with the bot
+This script is a Telegram bot that helps track personal expenses. It is designed to run on Google Apps Script, a scripting platform for Google services. In particular, this script saves data directly to Google Sheets.
 
-# Demo
+<p align="center">
+ <img src="https://i.imgur.com/Iim5HW6.png"  width="100" height="100"/>
+</p>
+
+- **Initial Configuration**: initialize variables in parameters.gs such as the Telegram bot token, Google Sheets ID, WebAppa URL, and other configuration settings. You will also need to configure the `categories` object that contains the categories and expense sections.
+
+- **Post request handling**: the `doPost` function is called when the bot receives a POST request from Telegram. This function analyzes the content of the request and sends the request to the appropriate handler based on the type of action (`callback` or `message`):
+  - **Management of callback actions**: the `handleCallback` function handles actions associated with inline buttons on the Telegram keyboard (called callbacks). Depending on the type of callback, the code performs actions such as deleting an expense, selecting a category or section.
+  - **Message handling**: the `handleMessage` function handles messages sent by users to the bot. Depending on the content of the message, the bot displays a welcome message, lists the available commands, starts the process of adding or deleting an expense, or handles the price entry of an expense.
+
+- **Adding an expense**: when you select the button to add an expense, the bot displays the available categories. The user then selects a category and then a section. Finally, the bot prompts the user to enter the price of the expense and saves it in the spreadsheet.
+
+- **Deleting an expense**: when you select the button to delete an expense, the bot displays the last 5 expenses entered and allows the user to select one to delete. Once selected, the bot deletes the expense from your spreadsheet.
+
+- **Expense Summary**: The bot provides a summary of expenses by category and by month, showing the total amount of expenses for each category and for each month (and also the major frequency of categories and sections).
+
+- **Language setting**: multilingual support is provided and it is possible to change the language of the bot. If you don't find your language and want to contribute open a pull request.
+
+- **Secure access through ID control**: The bot is designed to allow only a specific user to interact with it, based on the user ID provided by Telegram and configured in `parameters.gs`.
+
+## Demo
 
 | Add expense | Delete expense | Summary |
 |:-----------------:|:-----------------:|:-----------------:|
 | ![Add expense](demo/add.gif) | ![Delete expense](demo/delete.gif) | ![Summary](demo/summary.gif)
   
-#  Installation
-* Create a generic google sheet and copy the spreedsheet ID
-* Create a Telegram bot via @BotFather and get the token
-* Add the handler.gs App Script to google sheet. Follow this Google guide to learn how to add a new App Script: **[How to add an App Script to a Google Sheet](https://developers.google.com/apps-script/guides/sheets/functions)**
-* Deploy App Script as Web Application
-    - Perform a new deployment of the App Script as a Web Application.
-    - Type: **Web Application**
-    - Description: **as you prefer** (e.g. WebAppDeploy)
-    - Execute as: **Me**
-    - Access authorization: **Everyone**
-    - Click on **Execute Deployment**
-    - Click on **Authorize Access**
-    - Click on **Advanced** in bottom left corner
-    - Click on **Open (app script name) (not secure)**
-    - Click on **Allow**
-    - Save the webapp url generated (e.g. https://script.google.com/macros/s/AKfycbwHkLLHeAY-07_A2dmXftSX0JNR8gTpeREQmzo2j2aWmItIuSsFSYzlB1bJNw0Dovd3qw/exec)
-    - Click on **Finish**
-* App Script personalization
-  - Put all the tokens/IDs saved in the previous steps into the _parameters.gs_ script
-  - To extract your telegram ID and protect the bot from access by other users you can use [userInfoBot](https://t.me/@userinfobot)
-  - Customize categories and sections
-* Update App script deployment:
-  - Click on **Execute deployment**
-  - Click on **Manage deployment**
-  - Click on **Modify icon**
-  - Click on **Version**
-  - Click on **New Version**
-* Execute  *setWebhook* functions
-* Enjoy
+## Installation
 
-# Thanks
-- R3D4NG3L for the telegram ID verification {checkUserAutentication()}
+Follow these steps to set up the `twallet` Telegram bot and start tracking your expenses:
+
+1. Create a generic Google Sheet and copy the Spreadsheet ID.
+   - Go to Google Drive and create a new Google Sheet.
+   - Copy the unique ID from the URL of the newly created sheet. The ID is a long string of letters and numbers after `/spreadsheets/d/`.
+
+2. Create a Telegram bot via @BotFather and get the token.
+   - Open Telegram and search for the `@BotFather` bot.
+   - Start a chat with `@BotFather` and use the `/newbot` command to create a new bot.
+   - Follow the instructions and get the generated bot token. Save this token for later use.
+
+3. Add all the `.gs` files in this repo to Apps Script.
+   - Open the Google Sheet created in step 1.
+   - Go to "Extensions" in the menu and select "Apps Script".
+   - It will open a new tab with the Google Apps script editor. Import all scripts from this repo into Apps Script.
+
+4. Deploy the App Script as a Web Application.
+   - Click on the "Deploy" menu in the Apps Script editor and select "Deploy as web app".
+   - Choose "Web application" as the deployment type.
+   - Provide a description (e.g., "WebAppDeploy") as you prefer.
+   - Set "Execute as" to "Me".
+   - Under "Who has access to the app," choose "Anyone, even anonymous."
+   - Click on "Deploy" to deploy the web application.
+   - A dialog will prompt you to review the permissions needed by the app. Click "Authorize access" to proceed.
+
+5. Save the WebApp URL generated.
+   - After authorization, you will get a WebApp URL, like `https://script.google.com/macros/s/YourWebAppID/exec`. Save this URL for later use.
+
+6. App Script Personalization.
+   - Open the `parameters.gs` script in the Apps Script editor.
+   - Replace the `TELEGRAM_TOKEN`, `SHEET_ID`, `SHEET_NAME`, `USER_ID`, `WEBAPP_URL`, `TIMEZONE` with the tokens/IDs saved in the previous steps.
+
+7. Customize categories and sections.
+   - Update the `categories` object in the `parameters.gs` script to customize the categories and sections according to your preferences.
+
+8. Update App Script deployment.
+   - In the Apps Script editor, go to the "Deploy" menu and select "Manage deployments."
+   - Click on the modify icon (pencil) next to the "WebAppDeploy" deployment.
+   - Click on "Version" and then "New Version" to create a new version of the deployment.
+
+9. Execute `setWebhook` functions.
+   - In the Apps Script editor, click on the "Run" menu and select "Run function" -> `setWebhook`.
+   - This function will set up the webhook for your bot, allowing it to receive updates from Telegram.
+
+10. Enjoy!
+    - Your `twallet` Telegram bot is now ready to use. Happy budget tracking with `twallet`!
+   
+## Contact
+-  [Telegram](https://t.me/sickmz)
