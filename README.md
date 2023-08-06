@@ -1,10 +1,8 @@
-# twallet
+# 🤖 twallet
 
-This script is a Telegram bot that helps track personal expenses. It is designed to run on Google Apps Script, a scripting platform for Google services. In particular, this script saves data directly to Google Sheets.
+This script is a Telegram bot that helps track personal expenses. It is designed to run on Google Apps Script, a scripting platform for Google services. In particular, this script saves data directly to Google Sheets.  
 
-<p align="center">
- <img src="https://i.imgur.com/Iim5HW6.png"  width="100" height="100"/>
-</p>
+<hr>
 
 - **Initial Configuration**: initialize variables in parameters.gs such as the Telegram bot token, Google Sheets ID, WebAppa URL, and other configuration settings. You will also need to configure the `categories` object that contains the categories and expense sections.
 
@@ -36,10 +34,11 @@ Follow these steps to set up the `twallet` Telegram bot and start tracking your 
    - Go to Google Drive and create a new Google Sheet.
    - Copy the unique ID from the URL of the newly created sheet. The ID is a long string of letters and numbers after `/spreadsheets/d/`.
 
-2. Create a Telegram bot via @BotFather and get the token.
+2. Create a Telegram bot via @BotFather and get the token and retrieve your telegram `USER_ID`
    - Open Telegram and search for the `@BotFather` bot.
    - Start a chat with `@BotFather` and use the `/newbot` command to create a new bot.
    - Follow the instructions and get the generated bot token. Save this token for later use.
+   - Go to the Bot [getUserInfo](https://t.me/userinfobot) and retrieve your Telegram user id. Save this id for later use.
 
 3. Add all the `.gs` files in this repo to Apps Script.
    - Open the Google Sheet created in step 1.
