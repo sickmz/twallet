@@ -2,7 +2,7 @@
 
 This script is a Telegram bot that helps track personal expenses. It is designed to run on Google Apps Script, a scripting platform for Google services. In particular, this script saves data directly to Google Sheets.  
 
-<hr>
+## Features
 
 - **Initial Configuration**: initialize variables in parameters.gs such as the Telegram bot token, Google Sheets ID, WebAppa URL, and other configuration settings. You will also need to configure the `categories` object that contains the categories and expense sections.
 
@@ -34,7 +34,7 @@ Follow these steps to set up the `twallet` Telegram bot and start tracking your 
    - Go to Google Drive and create a new Google Sheet.
    - Copy the unique ID from the URL of the newly created sheet. The ID is a long string of letters and numbers after `/spreadsheets/d/`.
 
-2. Create a Telegram bot via @BotFather and get the token and retrieve your telegram `USER_ID`
+2. Create a Telegram bot via @BotFather and get the token and retrieve your telegram user id.
    - Open Telegram and search for the `@BotFather` bot.
    - Start a chat with `@BotFather` and use the `/newbot` command to create a new bot.
    - Follow the instructions and get the generated bot token. Save this token for later use.
@@ -59,7 +59,7 @@ Follow these steps to set up the `twallet` Telegram bot and start tracking your 
 
 6. App Script Personalization.
    - Open the `parameters.gs` script in the Apps Script editor.
-   - Replace the `TELEGRAM_TOKEN`, `SHEET_ID`, `SHEET_NAME`, `USER_ID`, `WEBAPP_URL`, `TIMEZONE` with the tokens/IDs saved in the previous steps.
+   - Insert into variables `TELEGRAM_TOKEN`, `SHEET_ID`, `SHEET_NAME`, `USER_ID` and `WEBAPP_URL` the tokens/IDs saved in the previous steps. If necessary, edit the `TIMEZONE`.
 
 7. Customize categories and sections.
    - Update the `categories` object in the `parameters.gs` script to customize the categories and sections according to your preferences.
