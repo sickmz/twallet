@@ -1,14 +1,16 @@
 function doPost(e) {
   try {
+    var language = translations[LANGUAGE];
     var update = JSON.parse(e.postData.contents);
 
     if (update.callback_query) {
       handleCallback(update.callback_query);
-    } else if (update.message && checkUserAuthentication(update.message.chat.id)) {
+    } else if (update.message && checkUserAuthentication(update.message.chat.id, update.message)) {
       handleMessage(update.message);
     }
   } catch (error) {
-    Logger.log('❌ Error handling POST request: ' + error.message + ' ❌');
+    sendTelegramMessage(update.message.chat.id, language['error_post_request']
+    .replace('{error.message}', error.message));
   }
 }
 
@@ -42,7 +44,7 @@ function handleCallback(callbackQuery) {
       break;
 
     default:
-      sendTelegramMessage(chatId, '❌ Unknown callback type ❌');
+      sendTelegramMessage(chatId, language['error_unknown_callback']);
       break;
   }
 }
@@ -59,7 +61,7 @@ function handleMessage(message) {
       break;
 
     case '/cancel':
-      showMainMenu(chatId, language['canceled']);
+      showMainMenu(chatId, language['command_canceled']);
       break;
 
     case '/help':
@@ -70,31 +72,33 @@ function handleMessage(message) {
       showLanguageOptions(chatId);
       break;
 
-    case '🍕 ' + language['add_expense']:
+    case '🍕 ' + language['customkey_add_expense']:
       startExpenseAddingProcess(chatId);
       break;
 
-    case '🥊 ' + language['delete_expense']:
+    case '🥊 ' + language['customkey_delete_expense']:
       startExpenseDeletingProcess(chatId);
       break;
 
-    case '💸 ' + language['show_summary']:
+    case '💸 ' + language['customkey_show_summary']:
       showExpenseSummary(chatId);
       break;
 
     default:
-      if (message.reply_to_message && message.reply_to_message.text === language['enter_price']) {
+      if (message.reply_to_message && message.reply_to_message.text === language['inline_enter_price']) {
         if (/^[0-9.,]+$/.test(message.text)) {
         var price = parseFloat(message.text.replace(',', '.'));
         saveExpense(chatId, price);
         break;
       } else {
-          var error = "❌ Error: the value entered (" + message.text + ") contains invalid characters! ❌";  
+          var error = language['error_invalid_characters']
+          .replace('{message.text}', message.text);  
           showMainMenu(chatId, error);
           break;
         }
       }  else { 
-          var error = "❌ Error: command (" + message.text + ") not recognized! ❌";
+          var error = language['error_command_not_recognized']
+          .replace('{message.text}', message.text);  
           showMainMenu(chatId, error);
           break;
         }
