@@ -1,3 +1,4 @@
+// Set up the webhook for the Telegram bot
 function setWebhook() {
   try {
     var url = `https://api.telegram.org/bot${TELEGRAM_TOKEN}/setWebhook?url=${WEBAPP_URL}`;
@@ -7,6 +8,7 @@ function setWebhook() {
   }
 }
 
+// Send a message to a Telegram chat
 function sendTelegramMessage(chatId, text, options) {
   try {
     options = options || {};
