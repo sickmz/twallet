@@ -1,3 +1,4 @@
+// Handle incoming POST requests from the Telegram bot API
 function doPost(e) {
   try {
     var language = translations[LANGUAGE];
@@ -14,6 +15,7 @@ function doPost(e) {
   }
 }
 
+// Handle callback queries from inline keyboard buttons
 function handleCallback(callbackQuery) {
   var callbackQueryData = callbackQuery.data.split('_');
   var chatId = callbackQuery.message.chat.id;
@@ -49,6 +51,7 @@ function handleCallback(callbackQuery) {
   }
 }
 
+// Handle incoming messages from users
 function handleMessage(message) {
   var language = translations[LANGUAGE];
   var chatId = message.chat.id;
@@ -72,33 +75,31 @@ function handleMessage(message) {
       showLanguageOptions(chatId);
       break;
 
-    case '🍕 ' + language['customkey_add_expense']:
+    case language['customkey_add_expense']:
       startExpenseAddingProcess(chatId);
       break;
 
-    case '🥊 ' + language['customkey_delete_expense']:
-      startExpenseDeletingProcess(chatId);
+    case language['customkey_delete_expense']:
+      getLastExpenses(chatId);
       break;
 
-    case '💸 ' + language['customkey_show_summary']:
+    case language['customkey_show_summary']:
       showExpenseSummary(chatId);
       break;
 
     default:
       if (message.reply_to_message && message.reply_to_message.text === language['inline_enter_price']) {
-        if (/^[0-9.,]+$/.test(message.text)) {
+        if (/^[0-9]+([,.][0-9]{1,2})?$/.test(message.text)) {
         var price = parseFloat(message.text.replace(',', '.'));
         saveExpense(chatId, price);
         break;
       } else {
-          var error = language['error_invalid_characters']
-          .replace('{message.text}', message.text);  
+          var error = language['error_invalid_characters'].replace('{message.text}', message.text);  
           showMainMenu(chatId, error);
           break;
         }
-      }  else { 
-          var error = language['error_command_not_recognized']
-          .replace('{message.text}', message.text);  
+      } else { 
+          var error = language['error_command_not_recognized'].replace('{message.text}', message.text);  
           showMainMenu(chatId, error);
           break;
         }
