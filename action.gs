@@ -1,22 +1,20 @@
+// Start the expense adding process by showing categories
 function startExpenseAddingProcess(chatId) {
   showCategories(chatId);
 }
 
+// Show categories to the user in an inline keyboard
 function showCategories(chatId) {
   var language = translations[LANGUAGE];
   var inlineKeyboard = Object.keys(categories).map(function (category) {
     return [{ text: category, callback_data: 'category_' + category }];
   });
 
-  var options = {
-    reply_markup: JSON.stringify({
-      inline_keyboard: inlineKeyboard
-    })
-  };
-
+  var options = {reply_markup: JSON.stringify({ inline_keyboard: inlineKeyboard })};
   sendTelegramMessage(chatId, language['inline_choose_category'], options);
 }
 
+// Show sections based on the selected category
 function showSections(chatId, category) {
   var language = translations[LANGUAGE];
   var sections = categories[category];
@@ -24,26 +22,19 @@ function showSections(chatId, category) {
     return [{ text: section, callback_data: 'section_' + section }];
   });
 
-  var options = {
-    reply_markup: JSON.stringify({
-       inline_keyboard: inlineKeyboard
-    })
-  };
-
+  var options = {reply_markup: JSON.stringify({inline_keyboard: inlineKeyboard})};
   sendTelegramMessage(chatId, language['inline_choose_section'], options);
 }
 
+// Request price input from the user
 function requestPriceInput(chatId) {
   var language = translations[LANGUAGE];
-  var options = {
-    reply_markup: JSON.stringify({
-      force_reply: true
-    })
-  };
 
+  var options = {reply_markup: JSON.stringify({force_reply: true})};
   sendTelegramMessage(chatId, language['inline_enter_price'], options);
 }
 
+// Save the user's expense in the Google Sheet
 function saveExpense(chatId, price) {
   var month = getMonth();
   var category = PropertiesService.getScriptProperties().getProperty('category');
@@ -62,45 +53,38 @@ function saveExpense(chatId, price) {
   showMainMenu(chatId, message);
 
   PropertiesService.getScriptProperties().deleteProperty('category');
-  PropertiesService.getScriptProperties().deleteProperty('section');
-  
+  PropertiesService.getScriptProperties().deleteProperty('section');  
 }
 
-function getLastExpenses() {
+// Get the last 5 expenses from the Google Sheet and start the expense deleting process
+function getLastExpenses(chatId) {
+  var language = translations[LANGUAGE];
   var sheet = getSheet();
   var numRows = sheet.getLastRow();
-  var dataRange = sheet.getRange(numRows - 4, 2, 5, 4); 
+  var dataRange = sheet.getRange(numRows - 4, 2, 5, 4);
   var data = dataRange.getValues();
 
   var rowIndices = [];
   var expenses = [];
+  var inlineKeyboard = [];
+
   for (var i = numRows - 4; i <= numRows; i++) {
     var expense = data[i - (numRows - 4)];
     expenses.push(expense);
     rowIndices.push(i);
+
+    var date = Utilities.formatDate(expense[3], TIMEZONE, "dd/MM");
+    var expenseText = "🗓️ " + date + ": " + expense[0] + "/" + expense[1] + " - " + expense[2] + " €";
+    inlineKeyboard.push([{ text: expenseText, callback_data: 'delete_' + i }]);
   }
+
+  var options = { reply_markup: JSON.stringify({ inline_keyboard: inlineKeyboard }) };
+  sendTelegramMessage(chatId, language['inline_choose_expense'], options);
 
   return { data: expenses, rowIndices: rowIndices };
 }
 
-function startExpenseDeletingProcess(chatId) {
-  var language = translations[LANGUAGE];
-  var expensesData = getLastExpenses();
-  var inlineKeyboard = expensesData.data.map(function (expense, index) {
-    var date = Utilities.formatDate(expense[3], TIMEZONE, "dd/MM")
-    var expenseText = "🗓️ " + date + ": " + expense[0] + "/" + expense[1] + " - " + expense[2] + " €";
-    return [{ text: expenseText, callback_data: 'delete_' + expensesData.rowIndices[index] }];
-  });
-
-  var options = {
-    reply_markup: JSON.stringify({
-      inline_keyboard: inlineKeyboard
-    })
-  };
-
-  sendTelegramMessage(chatId, language['inline_choose_expense'], options);
-}
-
+// Delete an expense from the Google Sheet
 function deleteExpense(chatId, expenseIndex) {
   var expensesData = getLastExpenses();
   var rowIndices = expensesData.rowIndices;
@@ -122,23 +106,20 @@ function deleteExpense(chatId, expenseIndex) {
 
     showMainMenu(chatId, message);
 
-  } else { sendTelegramMessage(chatId, language['error_unable_find_expense']); }
-}
-
-function calculateTotalExpenses(data) {
-  var totalExpenses = 0;
-
-  for (var i = 1; i < data.length; i++) {
-    var expenseAmount = parseFloat(data[i][3]);
-
-    if (!isNaN(expenseAmount)) {
-      totalExpenses += expenseAmount;
+  } else { 
+      sendTelegramMessage(chatId, language['error_unable_find_expense']); 
     }
-  }
-
-  return totalExpenses;
 }
 
+// Calculate the total expenses from the Google Sheet data
+function calculateTotalExpenses(data) {
+  return data.slice(1).reduce((total, row) => {
+    const expenseAmount = parseFloat(row[3]);
+    return isNaN(expenseAmount) ? total : total + expenseAmount;
+  }, 0);
+}
+
+// Calculate the summary of expenses by month and category
 function calculateSummaryByMonthAndCategory(data) {
   var summaryByMonthAndCategory = {};
   var summaryByMonthTotal = {};
@@ -166,37 +147,7 @@ function calculateSummaryByMonthAndCategory(data) {
   return { summaryByMonthAndCategory, summaryByMonthTotal };
 }
 
-function findMostFrequentCategoryAndSection(data) {
-  var categoryCounts = {};
-  var sectionCounts = {};
-  var mostFrequentCategory = { name: '', count: 0 };
-  var mostFrequentSection = { name: '', count: 0 };
-
-  for (var i = 1; i < data.length; i++) {
-    var expenseCategory = data[i][1];
-    var expenseSection = data[i][2];
-
-    // Count occurrences of each category
-    categoryCounts[expenseCategory] = (categoryCounts[expenseCategory] || 0) + 1;
-    // Count occurrences of each section
-    sectionCounts[expenseSection] = (sectionCounts[expenseSection] || 0) + 1;
-
-    // Update the most frequent category
-    if (categoryCounts[expenseCategory] > mostFrequentCategory.count) {
-      mostFrequentCategory.name = expenseCategory;
-      mostFrequentCategory.count = categoryCounts[expenseCategory];
-    }
-
-    // Update the most frequent section
-    if (sectionCounts[expenseSection] > mostFrequentSection.count) {
-      mostFrequentSection.name = expenseSection;
-      mostFrequentSection.count = sectionCounts[expenseSection];
-    }
-  }
-
-  return { mostFrequentCategory, mostFrequentSection };
-}
-
+// Show the expense summary to the user
 function showExpenseSummary(chatId) {
   try {
     var sheet = getSheet();
@@ -223,16 +174,9 @@ function showExpenseSummary(chatId) {
     }
 
     var globalExpenses= globalExpenses.toFixed(2);
-    var { mostFrequentCategory, mostFrequentSection } = findMostFrequentCategoryAndSection(data);
+    var summaryAnalisys = language['inline_global_expenses'].replace('{globalExpenses}', globalExpenses);  
 
-    var summaryAnalisys = "😱 " + language['inline_global_expenses'] + " " + globalExpenses + " €\n";  
-    summaryAnalisys += "🤜 " + language['inline_most_frequent_category'] + " " + mostFrequentCategory.name + " (" + language['inline_occurrences'] + ": " + mostFrequentCategory.count + ")\n";
-    summaryAnalisys += "🤜 " + language['inline_most_frequent_section']  + " " + mostFrequentSection.name + " (" + language['inline_occurrences'] + ": " + mostFrequentSection.count + ")\n";
-
-    var options = {
-      parse_mode: "Markdown"
-    };
-
+    var options = { parse_mode: "Markdown"};
     sendTelegramMessage(chatId, summaryText, options);
     showMainMenu(chatId, summaryAnalisys);
 
