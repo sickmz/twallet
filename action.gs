@@ -14,7 +14,7 @@ function showCategories(chatId) {
     })
   };
 
-  sendTelegramMessage(chatId, language['choose_category'], options);
+  sendTelegramMessage(chatId, language['inline_choose_category'], options);
 }
 
 function showSections(chatId, category) {
@@ -30,7 +30,7 @@ function showSections(chatId, category) {
     })
   };
 
-  sendTelegramMessage(chatId, language['choose_section'], options);
+  sendTelegramMessage(chatId, language['inline_choose_section'], options);
 }
 
 function requestPriceInput(chatId) {
@@ -41,7 +41,7 @@ function requestPriceInput(chatId) {
     })
   };
 
-  sendTelegramMessage(chatId, language['enter_price'], options);
+  sendTelegramMessage(chatId, language['inline_enter_price'], options);
 }
 
 function saveExpense(chatId, price) {
@@ -54,7 +54,7 @@ function saveExpense(chatId, price) {
   sheet.appendRow([month, category, section, price, date]);
 
   var language = translations[LANGUAGE];
-  var message = language['expense_saved']
+  var message = language['inline_expense_saved']
     .replace('{category}', category)
     .replace('{section}', section)
     .replace('{price}', price.toFixed(2));
@@ -84,6 +84,7 @@ function getLastExpenses() {
 }
 
 function startExpenseDeletingProcess(chatId) {
+  var language = translations[LANGUAGE];
   var expensesData = getLastExpenses();
   var inlineKeyboard = expensesData.data.map(function (expense, index) {
     var date = Utilities.formatDate(expense[3], TIMEZONE, "dd/MM")
@@ -97,7 +98,7 @@ function startExpenseDeletingProcess(chatId) {
     })
   };
 
-  sendTelegramMessage(chatId, 'Choose the expense to be eliminated:', options);
+  sendTelegramMessage(chatId, language['inline_choose_expense'], options);
 }
 
 function deleteExpense(chatId, expenseIndex) {
@@ -114,14 +115,14 @@ function deleteExpense(chatId, expenseIndex) {
     sheet.deleteRow(expenseIndex);
 
     var language = translations[LANGUAGE];
-    var message = language['expense_deleted']
+    var message = language['inline_expense_deleted']
     .replace('{category}', category)
     .replace('{section}', section)
     .replace('{price}', price);
 
     showMainMenu(chatId, message);
 
-  } else { sendTelegramMessage(chatId, '❌ Error: Unable to find the selected expense ❌'); }
+  } else { sendTelegramMessage(chatId, language['error_unable_find_expense']); }
 }
 
 function calculateTotalExpenses(data) {
@@ -207,7 +208,7 @@ function showExpenseSummary(chatId) {
     var { summaryByMonthAndCategory, summaryByMonthTotal } = calculateSummaryByMonthAndCategory(data);
     var globalExpenses = calculateTotalExpenses(data);
 
-    var summaryText = "Expenses summary:\n\n";
+    var summaryText = "";
 
     for (var month in summaryByMonthTotal) {
       var totalAmountMonth = summaryByMonthTotal[month].toFixed(2);
@@ -224,9 +225,9 @@ function showExpenseSummary(chatId) {
     var globalExpenses= globalExpenses.toFixed(2);
     var { mostFrequentCategory, mostFrequentSection } = findMostFrequentCategoryAndSection(data);
 
-    var summaryAnalisys = "😱 " + language['global_expenses'] + " " + globalExpenses + " €\n";  
-    summaryAnalisys += "🤜 " + language['most_frequent_category'] + " " + mostFrequentCategory.name + " (" + language['occurrences'] + ": " + mostFrequentCategory.count + ")\n";
-    summaryAnalisys += "🤜 " + language['most_frequent_section']  + " " + mostFrequentSection.name + " (" + language['occurrences'] + ": " + mostFrequentSection.count + ")\n";
+    var summaryAnalisys = "😱 " + language['inline_global_expenses'] + " " + globalExpenses + " €\n";  
+    summaryAnalisys += "🤜 " + language['inline_most_frequent_category'] + " " + mostFrequentCategory.name + " (" + language['inline_occurrences'] + ": " + mostFrequentCategory.count + ")\n";
+    summaryAnalisys += "🤜 " + language['inline_most_frequent_section']  + " " + mostFrequentSection.name + " (" + language['inline_occurrences'] + ": " + mostFrequentSection.count + ")\n";
 
     var options = {
       parse_mode: "Markdown"
@@ -236,6 +237,6 @@ function showExpenseSummary(chatId) {
     showMainMenu(chatId, summaryAnalisys);
 
   } catch (error) {
-    sendTelegramMessage(chatId, '❌ Error showing expense summary: ' + error.message + ' ❌');
+    sendTelegramMessage(chatId, language['error_showing_summary'].replace('{error.message}', error.message)); 
   }
 }
