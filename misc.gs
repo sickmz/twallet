@@ -1,8 +1,8 @@
 function showMainMenu(chatId, message) {
   var language = translations[LANGUAGE];
   var customKeyboard = [
-  ['🍕 ' + language['add_expense'], '🥊 ' + language['delete_expense']],
-  ['💸 ' + language['show_summary']]];
+  ['🍕 ' + language['customkey_add_expense'], '🥊 ' + language['customkey_delete_expense']],
+  ['💸 ' + language['customkey_show_summary']]];
 
   var options = {
   reply_markup: JSON.stringify({
@@ -16,26 +16,17 @@ function showMainMenu(chatId, message) {
 }
 
 function showWelcomeMessage(chatId) {
-  var message = '👋 Hi, my name is twallet and I can help you keeping track of your expenses!';
+  var language = translations[LANGUAGE];
+  var message = language['command_show_welcome'];
   sendTelegramMessage(chatId, message);
-  var message = '✅ What you need to know\n\n';
-  message += '1️⃣ Only you can interact with your bot, thanks to telegram ID-based authentication\n\n';
-  message += '2️⃣ You can add everyday expenses through categories and sections with convenient inline keyboardsn\n\n';
-  message += '3️⃣ You can fully customize categories and sections\n\n';
-  message += '4️⃣ You can delete one of the last 5 expenses entered\n\n';
-  message += '5️⃣ You can check how much you\'ve spent since the beginning of the year, both by month and by category';
+  var message = language['command_show_welcome_detailed'];
   
   showMainMenu(chatId, message);
 }
 
 function showHelpMessage(chatId) {
-  var message = '⚙️ Commands\n\n';
-  message += '• /start: show the welcome message \n';
-  message += '• /help: open this message and get help \n';
-  message += '• /cancel: cancel the current command \n';
-  message += '• /language: change the bot\'s language \n\n';
-  message += '👤 Contact me\n\n';
-  message += '• @sickmz';
+  var language = translations[LANGUAGE];
+  var message = language['command_show_help'];
 
   showMainMenu(chatId, message);
 }
@@ -48,15 +39,17 @@ function getMonth() {
   return month;
 }
 
-function checkUserAuthentication(id) {
+function checkUserAuthentication(id, message) {
+  var language = translations[LANGUAGE];
   if (USER_ID == id)
     return true;
 
-  sendTelegramMessage(id, "⛔ You're not authorized! ⛔");
+  sendTelegramMessage(id, "⛔" + language['error_not_authorized'] + "⛔");
+  sendTelegramMessage(USER_ID, "@" + message.from.username + " (id: " + id + ") 🤔");
+
   return false;
 }
 
 function getSheet() {
   return SpreadsheetApp.openById(SHEET_ID).getSheetByName(SHEET_NAME);
 }
-
