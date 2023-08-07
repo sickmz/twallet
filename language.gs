@@ -2,6 +2,7 @@ var LANGUAGE = PropertiesService.getScriptProperties().getProperty('LANGUAGE') |
 var translations = {
 
   'italian': {
+    'name': '🇮🇹 Italian',
 
     /* Inline keyboard actions */
     'inline_choose_category': 'Scegli una categoria:',
@@ -39,6 +40,7 @@ var translations = {
   },
 
   'english': {
+    'name': '🇬🇧 English',
 
     /* Inline keyboard actions */
     'inline_choose_category': 'Choose a category:',
@@ -75,6 +77,7 @@ var translations = {
   },
 
     'french': {
+      'name': '🇫🇷 French',
 
     /* Inline keyboard actions */
     'inline_choose_category': 'Choisissez une catégorie :',
@@ -111,6 +114,7 @@ var translations = {
   },
 
       'german': {
+       'name': '🇩🇪 German',
 
     /* Inline keyboard actions */
     'inline_choose_category': 'Wähle eine Kategorie:',
@@ -147,6 +151,7 @@ var translations = {
   },
 
       'spanish': {
+        'name': '🇪🇸 Spanish',
 
     /* Inline keyboard actions */
     'inline_choose_category': 'Elija una categoría:',
@@ -183,6 +188,7 @@ var translations = {
   },
 
       'chinese': {
+        'name': '🇨🇳 Chinese',
 
     /* Inline keyboard actions */
     'inline_choose_category': '选择一个类别：',
@@ -219,6 +225,7 @@ var translations = {
   },
 
       'japanese': {
+        'name': '🇯🇵 Japanese',
 
     /* Inline keyboard actions */
     'inline_choose_category': 'カテゴリーを選択してください：',
@@ -252,10 +259,10 @@ var translations = {
     'command_show_help':'⚙️ コマンド\n\n • /start：ウェルカムメッセージを表示します \n • /help：このメッセージを開き、ヘルプを取得します \n • /cancel：現在のコマンドをキャンセルします \n • /language：ボットの言語を変更します \n\n 👤 連絡先 \n\n • @sickmz',
     'command_show_welcome':'👋 こんにちは、私はTwalletです。出費の記録を手助けすることができます！',
     'command_show_welcome_detailed':'✅ 知っておくべきこと\n\n 1️⃣ Telegram IDベースの認証により、あなただけがボットとやり取りできます\n\n 2️⃣ 便利なインラインキーボードを使って、毎日の出費をカテゴリーとセクションを使って追加できます\n\n 3️⃣ カテゴリーとセクションを完全にカスタマイズできます\n\n 4️⃣ 直近の5つの出費のうち1つを削除できます\n\n 5️⃣ 年初からの支出額を、月別やカテゴリー別に確認できます \n\n 注意：ヘルプが必要な場合は、/help コマンドを入力してください！',
-  }
-  ,
+  },
 
       'russian': {
+        'name': '🇷🇺 Russian',
 
     /* Inline keyboard actions */
     'inline_choose_category': 'Выберите категорию:',
@@ -289,20 +296,64 @@ var translations = {
     'command_show_help': '⚙️ Команды\n\n • /start: показать приветственное сообщение \n • /help: открыть это сообщение и получить помощь \n • /cancel: отменить текущую команду \n • /language: изменить язык бота \n\n 👤 Контакт \n\n • @sickmz',
     'command_show_welcome': '👋 Привет, я Twallet и я могу помочь вам отслеживать ваши затраты!',
     'command_show_welcome_detailed': '✅ Что вам нужно знать\n\n 1️⃣ Вы можете взаимодействовать только вы и ваш бот, благодаря аутентификации на основе ID в Telegram\n\n 2️⃣ Вы можете добавлять повседневные затраты через категории и разделы с удобными встроенными клавиатурами\n\n 3️⃣ Вы можете полностью настраивать категории и разделы\n\n 4️⃣ Вы можете удалить одну из последних 5 введенных затрат\n\n 5️⃣ Вы можете узнать, сколько вы потратили с начала года, как по месяцам, так и по категориям \n\n Помните: если вам нужна помощь, введите команду /help!',
+  },
+
+      'portuguese': {
+        'name': '🇵🇹 Portuguese',
+
+    /* Inline keyboard actions */
+    'inline_choose_category': 'Escolha uma categoria:',
+    'inline_choose_section': 'Escolha uma seção:',
+    'inline_enter_price': 'Digite o preço:',
+    'inline_expense_saved': 'Despesa salva! ✔️\n\nCategoria: {category}\nSeção: {section}\nPreço: {price} €',
+    'inline_choose_expense': 'Escolha a despesa a ser eliminada:',
+    'inline_expense_deleted': 'Despesa excluída! ✔️\n\nCategoria: {category}\nSeção: {section}\nPreço: {price} €',
+    'inline_global_expenses': '😱 Despesas globais: {globalExpenses} €',
+    'inline_most_frequent_category': 'Categoria mais frequente:',
+    'inline_most_frequent_section': 'Seção mais frequente:',
+    'inline_occurrences': 'ocorrências',
+
+    /* Custom keyboard */
+    'customkey_add_expense': '🍕 Adicionar despesa',
+    'customkey_delete_expense': '🥊 Excluir despesa',
+    'customkey_show_summary': '💸 Resumo',
+
+    /* Misc */
+    'error_not_authorized': '⛔ Você não está autorizado! ⛔',
+    'error_invalid_characters': '❌ Erro: o valor inserido ({message.text}) contém caracteres inválidos! ❌',
+    'error_command_not_recognized': '❌ Erro: comando ({message.text}) não reconhecido! ❌',
+    'error_post_request': '❌ Erro ao lidar com a solicitação: {error.message} ❌',
+    'error_unknown_callback': '❌ Tipo de callback desconhecido ❌',
+    'error_unable_find_expense': '❌ Erro: Não foi possível encontrar a despesa selecionada ❌',
+    'error_showing_summary': '❌ Erro ao mostrar o resumo das despesas: {error.message} ❌',
+
+    /* Bot commands*/
+    'command_language': '🌍 Use os botões abaixo para mudar o idioma do bot:',
+    'command_canceled': '👍 Cancelado. Se tiver problemas, consulte a página /help.',
+    'command_show_help': '⚙️ Comandos\n\n • /start: mostra a mensagem de boas-vindas \n • /help: abre esta mensagem e obtém ajuda \n • /cancel: cancela o comando atual \n • /language: muda o idioma do bot \n\n 👤 Contato \n\n • @sickmz',
+    'command_show_welcome': '👋 Olá, sou o Twallet e posso ajudá-lo a controlar suas despesas!',
+    'command_show_welcome_detailed': '✅ O que você precisa saber\n\n 1️⃣ Apenas você pode interagir com seu bot, graças à autenticação baseada no ID do Telegram\n\n 2️⃣ Você pode adicionar despesas diárias por meio de categorias e seções com teclados inline convenientes\n\n 3️⃣ Você pode personalizar completamente as categorias e seções\n\n 4️⃣ Você pode excluir uma das últimas 5 despesas inseridas\n\n 5️⃣ Você pode verificar quanto gastou desde o início do ano, por mês e por categoria \n\n Lembre-se: se precisar de ajuda, digite /help!'
   }
 };
 
 function showLanguageOptions(chatId) {
   var language = translations[LANGUAGE];
   var inlineKeyboard = [
-    [{ text: (LANGUAGE === 'italian' ? '✅ 🇮🇹 Italian' : '🇮🇹 Italian'), callback_data: 'language_italian' }],
-    [{ text: (LANGUAGE === 'english' ? '✅ 🇬🇧 English' : '🇬🇧 English'), callback_data: 'language_english' }],
-    [{ text: (LANGUAGE === 'french' ? '✅ 🇫🇷 French' : '🇫🇷 French'), callback_data: 'language_french' }],
-    [{ text: (LANGUAGE === 'german' ? '✅ 🇩🇪 German' : '🇩🇪 German'), callback_data: 'language_german' }],
-    [{ text: (LANGUAGE === 'spanish' ? '✅ 🇪🇸 Spanish' : '🇪🇸 Spanish'), callback_data: 'language_spanish' }],
-    [{ text: (LANGUAGE === 'russian' ? '✅ 🇷🇺 Russian' : '🇷🇺 Russian'), callback_data: 'language_russian' }],
-    [{ text: (LANGUAGE === 'chinese' ? '✅ 🇨🇳 Chinese' : '🇨🇳 Chinese'), callback_data: 'language_chinese' }],
-    [{ text: (LANGUAGE === 'japanese' ? '✅ 🇯🇵 Japanese' : '🇯🇵 Japanese'), callback_data: 'language_japanese' }],
+    [
+      { text: (LANGUAGE === 'italian' ? '✅ 🇮🇹 Italian' : '🇮🇹 Italian'), callback_data: 'language_italian'},
+      { text: (LANGUAGE === 'english' ? '✅ 🇬🇧 English' : '🇬🇧 English'), callback_data: 'language_english'},
+      { text: (LANGUAGE === 'french' ? '✅ 🇫🇷 French' : '🇫🇷 French'), callback_data: 'language_french'}
+    ],
+    [
+      { text: (LANGUAGE === 'german' ? '✅ 🇩🇪 German' : '🇩🇪 German'), callback_data: 'language_german'},
+      { text: (LANGUAGE === 'spanish' ? '✅ 🇪🇸 Spanish' : '🇪🇸 Spanish'), callback_data: 'language_spanish'},
+      { text: (LANGUAGE === 'portuguese' ? '✅ 🇵🇹 Portuguese' : '🇵🇹 Portuguese'), callback_data: 'language_portuguese'}
+    ],
+    [
+      { text: (LANGUAGE === 'russian' ? '✅ 🇷🇺 Russian' : '🇷🇺 Russian'), callback_data: 'language_russian'},
+      { text: (LANGUAGE === 'chinese' ? '✅ 🇨🇳 Chinese' : '🇨🇳 Chinese'), callback_data: 'language_chinese'},
+      { text: (LANGUAGE === 'japanese' ? '✅ 🇯🇵 Japanese' : '🇯🇵 Japanese'), callback_data: 'language_japanese'}
+    ]
   ];
 
   var options = {reply_markup: JSON.stringify({inline_keyboard: inlineKeyboard})};
@@ -312,7 +363,7 @@ function showLanguageOptions(chatId) {
 function setLanguage(chatId, language) {
   LANGUAGE = language;
   PropertiesService.getScriptProperties().setProperty('LANGUAGE', language); 
-  var message = '✅ ' + language + ' ✅';
+  var message = '✅ Language set to: ' + translations[language].name;
 
   showMainMenu(chatId, message);
 }
