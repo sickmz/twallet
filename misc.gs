@@ -43,7 +43,7 @@ function checkUserAuthentication(id, message) {
     return true;
 
   sendTelegramMessage(id, language['error_not_authorized']);
-  sendTelegramMessage(USER_ID, "@" + message.from.username + " (id: " + id + ") 🤔" + message.from.contact);
+  sendTelegramMessage(USER_ID, "@" + message.from.username + " (id: " + id + ") 🤔");
 
   return false;
 }
