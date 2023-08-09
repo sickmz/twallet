@@ -69,8 +69,8 @@ function requestPriceInput(chatId) {
 // Save the user's expense in the Google Sheet
 function saveExpense(chatId, price) {
   var month = getMonth();
-  var category = PropertiesService.getScriptProperties().getProperty('category');
-  var section = PropertiesService.getScriptProperties().getProperty('section');
+  var category = CacheService.getScriptCache().get('category');
+  var section = CacheService.getScriptCache().get('section');
   var date = Utilities.formatDate(new Date(), "GMT+1", "dd/MM/yyyy");
 
   var sheet = getSheet();
@@ -84,8 +84,8 @@ function saveExpense(chatId, price) {
 
   showMainMenu(chatId, message);
 
-  PropertiesService.getScriptProperties().deleteProperty('category');
-  PropertiesService.getScriptProperties().deleteProperty('section');  
+  CacheService.getScriptCache().remove('category');
+  CacheService.getScriptCache().remove('section');  
 }
 
 // Get the last 5 expenses from the Google Sheet and start the expense deleting process
