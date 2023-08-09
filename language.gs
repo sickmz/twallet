@@ -1,4 +1,4 @@
-var LANGUAGE = PropertiesService.getScriptProperties().getProperty('LANGUAGE') || 'english';
+var LANGUAGE = CacheService.getScriptCache().get('LANGUAGE') || 'english';
 var translations = {
 
   'italian': {
@@ -362,7 +362,7 @@ function showLanguageOptions(chatId) {
 
 function setLanguage(chatId, language) {
   LANGUAGE = language;
-  PropertiesService.getScriptProperties().setProperty('LANGUAGE', language); 
+  CacheService.getScriptCache().put('LANGUAGE', language);
   var message = '✅ Language set to: ' + translations[language].name;
 
   showMainMenu(chatId, message);
