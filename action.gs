@@ -6,9 +6,22 @@ function startExpenseAddingProcess(chatId) {
 // Show categories to the user in an inline keyboard
 function showCategories(chatId) {
   var language = translations[LANGUAGE];
-  var inlineKeyboard = Object.keys(categories).map(function (category) {
-    return [{ text: category, callback_data: 'category_' + category }];
-  });
+  var inlineKeyboard = [];
+  var row = [];
+  var buttonsPerRow = 2;
+
+  for (var category in categories) {
+    if (row.length === buttonsPerRow) {
+      inlineKeyboard.push(row);
+      row = [];
+      buttonsPerRow++;
+    }
+    row.push({ text: category, callback_data: 'category_' + category });
+  }
+
+  if (row.length > 0) {
+    inlineKeyboard.push(row);
+  }
 
   var options = {reply_markup: JSON.stringify({ inline_keyboard: inlineKeyboard })};
   sendTelegramMessage(chatId, language['inline_choose_category'], options);
@@ -18,12 +31,31 @@ function showCategories(chatId) {
 function showSections(chatId, category) {
   var language = translations[LANGUAGE];
   var sections = categories[category];
-  var inlineKeyboard = sections.map(function (section) {
-    return [{ text: section, callback_data: 'section_' + section }];
-  });
+  
+  var inlineKeyboard = [];
+  var row = [];
+  var buttonsPerRow = 2;
 
-  var options = {reply_markup: JSON.stringify({inline_keyboard: inlineKeyboard})};
+  for (var i = 0; i < sections.length; i++) {
+    if (row.length === buttonsPerRow) {
+      inlineKeyboard.push(row);
+      row = [];
+      buttonsPerRow++;
+    }
+    row.push({ text: sections[i], callback_data: 'section_' + sections[i] });
+  }
+
+  if (row.length > 0) {
+    inlineKeyboard.push(row);
+  }
+
+  var options = {reply_markup: JSON.stringify({ inline_keyboard: inlineKeyboard })};
   sendTelegramMessage(chatId, language['inline_choose_section'], options);
+}
+
+// Funzione per generare un numero casuale tra min e max (inclusi)
+function getRandomNumber(min, max) {
+  return Math.floor(Math.random() * (max - min + 1)) + min;
 }
 
 // Request price input from the user
@@ -177,6 +209,7 @@ function showExpenseSummary(chatId) {
     var summaryAnalisys = language['inline_global_expenses'].replace('{globalExpenses}', globalExpenses);  
 
     var options = { parse_mode: "Markdown"};
+    
     sendTelegramMessage(chatId, summaryText, options);
     showMainMenu(chatId, summaryAnalisys);
 
