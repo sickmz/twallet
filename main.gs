@@ -30,13 +30,13 @@ function handleCallback(callbackQuery) {
 
     case 'category':
       var category = callbackQueryData[1];
-      PropertiesService.getScriptProperties().setProperty('category', category);
+      CacheService.getScriptCache().put('category', category);
       showSections(chatId, category);
       break;
 
     case 'section':
       var section = callbackQueryData[1];
-      PropertiesService.getScriptProperties().setProperty('section', section);
+      CacheService.getScriptCache().put('section', section);
       requestPriceInput(chatId);
       break;
     
@@ -58,7 +58,7 @@ function handleMessage(message) {
   var text = message.text;
 
   switch (text) {
-    
+
     case '/start':
       showWelcomeMessage(chatId);
       break;
