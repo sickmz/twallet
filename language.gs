@@ -1,4 +1,4 @@
-var LANGUAGE = CacheService.getScriptCache().get('LANGUAGE') || 'english';
+var LANGUAGE = PropertiesService.getScriptProperties().getProperty('LANGUAGE') || 'english';
 var translations = {
 
   'italian': {
@@ -333,6 +333,116 @@ var translations = {
     'command_show_help': '⚙️ Comandos\n\n • /start: mostra a mensagem de boas-vindas \n • /help: abre esta mensagem e obtém ajuda \n • /cancel: cancela o comando atual \n • /language: muda o idioma do bot \n\n 👤 Contato \n\n • @sickmz',
     'command_show_welcome': '👋 Olá, sou o Twallet e posso ajudá-lo a controlar suas despesas!',
     'command_show_welcome_detailed': '✅ O que você precisa saber\n\n 1️⃣ Apenas você pode interagir com seu bot, graças à autenticação baseada no ID do Telegram\n\n 2️⃣ Você pode adicionar despesas diárias por meio de categorias e seções com teclados inline convenientes\n\n 3️⃣ Você pode personalizar completamente as categorias e seções\n\n 4️⃣ Você pode excluir uma das últimas 5 despesas inseridas\n\n 5️⃣ Você pode verificar quanto gastou desde o início do ano, por mês e por categoria \n\n Lembre-se: se precisar de ajuda, digite /help!'
+  },
+  'dutch': {
+    'name': '🇳🇱 Dutch',
+
+    /* Inline keyboard actions */
+    'inline_choose_category': 'Kies een categorie:',
+    'inline_choose_section': 'Kies een sectie:',
+    'inline_enter_price': 'Voer de prijs in:',
+    'inline_expense_saved': 'Uitgave opgeslagen! ✔️\n\nCategorie: {category}\nSectie: {section}\nPrijs: {price} €',
+    'inline_choose_expense':'Kies de uitgave die je wilt verwijderen:',
+    'inline_expense_deleted': 'Uitgave verwijderd! ✔️\n\nCategorie: {category}\nSectie: {section}\nPrijs: {price} €',
+    'inline_global_expenses': '😱 Globale uitgaven: {globalExpenses} €',
+    'inline_most_frequent_category': 'Meest voorkomende categorie:',
+    'inline_most_frequent_section': 'Meest voorkomende sectie:',
+    'inline_occurrences': 'keer',
+
+    /* Custom keyboard */
+    'customkey_add_expense': '🍕 Voeg uitgave toe',
+    'customkey_delete_expense': '🥊 Verwijder uitgave',
+    'customkey_show_summary': '💸 Overzicht',
+
+    /* Misc */
+    'error_not_authorized':'⛔ Je bent niet gemachtigd! ⛔',
+    'error_invalid_characters':'❌ Fout: de ingevoerde waarde ({message.text}) bevat ongeldige tekens! ❌',
+    'error_command_not_recognized':'❌ Fout: opdracht ({message.text}) niet herkend! ❌',
+    'error_post_request':'❌ Fout bij het verwerken van het verzoek: {error.message} ❌',
+    'error_unknown_callback':'❌ Onbekend callback-type ❌',
+    'error_unable_find_expense':'❌ Fout: Kan de geselecteerde uitgave niet vinden ❌',
+    'error_showing_summary':'❌ Fout bij het weergeven van de uitgaven samenvatting: {error.message} ❌',
+
+    /* Bot commands*/
+    'command_language': '🌍 Gebruik de onderstaande knoppen om de taal van de bot te wijzigen:',
+    'command_canceled': '👍 Geannuleerd. Als je problemen hebt, raadpleeg dan de /help pagina.',
+    'command_show_help':'⚙️ Opdrachten\n\n • /start: toon het welkomstbericht \n • /help: open dit bericht en krijg hulp \n • /cancel: annuleer de huidige opdracht \n • /language: wijzig de taal van de bot \n\n 👤 Contact \n\n • @sickmz',
+    'command_show_welcome':'👋 Hallo, ik ben Twallet en ik kan je helpen om je uitgaven bij te houden!',
+    'command_show_welcome_detailed':'✅ Wat je moet weten\n\n 1️⃣ Alleen jij kunt communiceren met je bot, dankzij telegram-ID-gebaseerde authenticatie\n\n 2️⃣ Je kunt dagelijkse uitgaven toevoegen via categorieën en secties met handige inline toetsenborden\n\n 3️⃣ Je kunt categorieën en secties volledig aanpassen\n\n 4️⃣ Je kunt een van de laatste 5 ingevoerde uitgaven verwijderen\n\n 5️⃣ Je kunt controleren hoeveel je hebt uitgegeven sinds het begin van het jaar, zowel per maand als per categorie \n\n Onthoud: als je hulp nodig hebt, typ dan /help!',
+  },
+
+  'korean': {
+    'name': '🇰🇷 Korean',
+
+    /* Inline keyboard actions */
+    'inline_choose_category': '카테고리 선택:',
+    'inline_choose_section': '섹션 선택:',
+    'inline_enter_price': '가격을 입력하세요:',
+    'inline_expense_saved': '지출이 저장되었습니다! ✔️\n\n카테고리: {category}\n섹션: {section}\n가격: {price} €',
+    'inline_choose_expense':'삭제할 지출을 선택하세요:',
+    'inline_expense_deleted': '지출이 삭제되었습니다! ✔️\n\n카테고리: {category}\n섹션: {section}\n가격: {price} €',
+    'inline_global_expenses': '😱 전체 지출: {globalExpenses} €',
+    'inline_most_frequent_category': '가장 빈번한 카테고리:',
+    'inline_most_frequent_section': '가장 빈번한 섹션:',
+    'inline_occurrences': '번',
+
+    /* Custom keyboard */
+    'customkey_add_expense': '🍕 지출 추가',
+    'customkey_delete_expense': '🥊 지출 삭제',
+    'customkey_show_summary': '💸 요약',
+
+    /* Misc */
+    'error_not_authorized':'⛔ 권한이 없습니다! ⛔',
+    'error_invalid_characters':'❌ 오류: 입력한 값 ({message.text})에 유효하지 않은 문자가 포함되어 있습니다! ❌',
+    'error_command_not_recognized':'❌ 오류: 명령어 ({message.text})이(가) 인식되지 않았습니다! ❌',
+    'error_post_request':'❌ 요청 처리 오류: {error.message} ❌',
+    'error_unknown_callback':'❌ 알 수 없는 콜백 유형 ❌',
+    'error_unable_find_expense':'❌ 오류: 선택한 지출을 찾을 수 없습니다 ❌',
+    'error_showing_summary':'❌ 지출 요약 표시 오류: {error.message} ❌',
+
+    /* Bot commands*/
+    'command_language': '🌍 언어를 변경하려면 아래 버튼을 사용하세요:',
+    'command_canceled': '👍 취소되었습니다. 문제가 있으면 /help 페이지를 참조하세요.',
+    'command_show_help':'⚙️ 명령어\n\n • /start: 환영 메시지 표시 \n • /help: 이 메시지 열기 및 도움말 얻기 \n • /cancel: 현재 명령 취소 \n • /language: 봇 언어 변경 \n\n 👤 연락처 \n\n • @sickmz',
+    'command_show_welcome':'👋 안녕하세요, 저는 Twallet입니다. 지출을 추적하는 데 도움을 드릴 수 있습니다!',
+    'command_show_welcome_detailed':'✅ 알아야 할 사항\n\n 1️⃣ 당신만이 Telegram ID 기반 인증을 통해 봇과 상호 작용할 수 있습니다.\n\n 2️⃣ 편리한 인라인 키보드를 통해 카테고리 및 섹션별 일일 지출을 추가할 수 있습니다.\n\n 3️⃣ 카테고리와 섹션을 완전히 사용자 정의할 수 있습니다.\n\n 4️⃣ 최근 5개의 입력한 지출 중 하나를 삭제할 수 있습니다.\n\n 5️⃣ 연도 초부터 현재까지의 지출액을 월별 및 카테고리별로 확인할 수 있습니다. \n\n 기억해주세요: 도움이 필요하면 /help를 입력하세요!',
+  },
+
+  'arabic': {
+    'name': '🇦🇪 Arabic',
+
+    /* Inline keyboard actions */
+    'inline_choose_category': 'اختر الفئة:',
+    'inline_choose_section': 'اختر القسم:',
+    'inline_enter_price': 'أدخل السعر:',
+    'inline_expense_saved': 'تم حفظ المصاريف! ✔️\n\nالفئة: {category}\nالقسم: {section}\nالسعر: {price} €',
+    'inline_choose_expense':'اختر المصاريف التي تريد حذفها:',
+    'inline_expense_deleted': 'تم حذف المصاريف! ✔️\n\nالفئة: {category}\nالقسم: {section}\nالسعر: {price} €',
+    'inline_global_expenses': '😱 المصروفات العامة: {globalExpenses} €',
+    'inline_most_frequent_category': 'الفئة الأكثر تكراراً:',
+    'inline_most_frequent_section': 'القسم الأكثر تكراراً:',
+    'inline_occurrences': 'مرات',
+
+    /* Custom keyboard */
+    'customkey_add_expense': '🍕 إضافة مصاريف',
+    'customkey_delete_expense': '🥊 حذف مصاريف',
+    'customkey_show_summary': '💸 ملخص',
+
+    /* Misc */
+    'error_not_authorized':'⛔ أنت غير مخول! ⛔',
+    'error_invalid_characters':'❌ خطأ: القيمة المدخلة ({message.text}) تحتوي على أحرف غير صالحة! ❌',
+    'error_command_not_recognized':'❌ خطأ: الأمر ({message.text}) غير معروف! ❌',
+    'error_post_request':'❌ خطأ في معالجة الطلب: {error.message} ❌',
+    'error_unknown_callback':'❌ نوع الاستدعاء غير معروف ❌',
+    'error_unable_find_expense':'❌ خطأ: لا يمكن العثور على المصاريف المحددة ❌',
+    'error_showing_summary':'❌ خطأ عرض ملخص المصاريف: {error.message} ❌',
+
+    /* Bot commands*/
+    'command_language': '🌍 استخدم الأزرار أدناه لتغيير لغة البوت:',
+    'command_canceled': '👍 تم الإلغاء. إذا كان لديك مشكلة، استشر صفحة /help.',
+    'command_show_help':'⚙️ الأوامر\n\n • /start: عرض رسالة الترحيب \n • /help: فتح هذه الرسالة والحصول على مساعدة \n • /cancel: إلغاء الأمر الحالي \n • /language: تغيير لغة البوت \n\n 👤 الاتصال \n\n • @sickmz',
+    'command_show_welcome':'👋 مرحباً، أنا تواليت ويمكنني مساعدتك في تتبع مصاريفك!',
+    'command_show_welcome_detailed':'✅ ما تحتاج إلى معرفته\n\n 1️⃣ يمكنك فقط التفاعل مع البوت، بفضل المصادقة على أساس معرف تيليجرام\n\n 2️⃣ يمكنك إضافة مصاريف يومية من خلال فئات وأقسام باستخدام لوحات مفاتيح مدمجة مريحة\n\n 3️⃣ يمكنك تخصيص فئات وأقسام بشكل كامل\n\n 4️⃣ يمكنك حذف واحدة من أحدث 5 مصاريف تم إدخالها\n\n 5️⃣ يمكنك التحقق من كم قد أنفقت منذ بداية العام، سواء بالشهر أو حسب الفئة \n\n تذكر: إذا كنت بحاجة إلى مساعدة، اكتب /help!',
   }
 };
 
@@ -340,19 +450,25 @@ function showLanguageOptions(chatId) {
   var language = translations[LANGUAGE];
   var inlineKeyboard = [
     [
-      { text: (LANGUAGE === 'italian' ? '✅ 🇮🇹 Italian' : '🇮🇹 Italian'), callback_data: 'language_italian'},
-      { text: (LANGUAGE === 'english' ? '✅ 🇬🇧 English' : '🇬🇧 English'), callback_data: 'language_english'},
-      { text: (LANGUAGE === 'french' ? '✅ 🇫🇷 French' : '🇫🇷 French'), callback_data: 'language_french'}
+      { text: (LANGUAGE === 'italian' ? '✅ 🇮🇹 it' : '🇮🇹 it'), callback_data: 'language_italian'},
+      { text: (LANGUAGE === 'english' ? '✅ 🇬🇧 en' : '🇬🇧 en'), callback_data: 'language_english'},
+      { text: (LANGUAGE === 'french' ? '✅ 🇫🇷 fr' : '🇫🇷 fr'), callback_data: 'language_french'}
     ],
     [
-      { text: (LANGUAGE === 'german' ? '✅ 🇩🇪 German' : '🇩🇪 German'), callback_data: 'language_german'},
-      { text: (LANGUAGE === 'spanish' ? '✅ 🇪🇸 Spanish' : '🇪🇸 Spanish'), callback_data: 'language_spanish'},
-      { text: (LANGUAGE === 'portuguese' ? '✅ 🇵🇹 Portuguese' : '🇵🇹 Portuguese'), callback_data: 'language_portuguese'}
+      { text: (LANGUAGE === 'german' ? '✅ 🇩🇪 de' : '🇩🇪 de'), callback_data: 'language_german'},
+      { text: (LANGUAGE === 'spanish' ? '✅ 🇪🇸 es' : '🇪🇸 es'), callback_data: 'language_spanish'},
+      { text: (LANGUAGE === 'portuguese' ? '✅ 🇵🇹 pt' : '🇵🇹 pt'), callback_data: 'language_portuguese'}
     ],
     [
-      { text: (LANGUAGE === 'russian' ? '✅ 🇷🇺 Russian' : '🇷🇺 Russian'), callback_data: 'language_russian'},
-      { text: (LANGUAGE === 'chinese' ? '✅ 🇨🇳 Chinese' : '🇨🇳 Chinese'), callback_data: 'language_chinese'},
-      { text: (LANGUAGE === 'japanese' ? '✅ 🇯🇵 Japanese' : '🇯🇵 Japanese'), callback_data: 'language_japanese'}
+      { text: (LANGUAGE === 'chinese' ? '✅ 🇨🇳 cn' : '🇨🇳 cn'), callback_data: 'language_chinese'},
+      { text: (LANGUAGE === 'japanese' ? '✅ 🇯🇵 jp' : '🇯🇵 jp'), callback_data: 'language_japanese'},
+      { text: (LANGUAGE === 'korean' ? '✅ 🇰🇷 kr' : '🇰🇷 kr'), callback_data: 'language_korean'}
+
+    ],
+    [
+      { text: (LANGUAGE === 'russian' ? '✅ 🇷🇺 ru' : '🇷🇺 ru'), callback_data: 'language_russian'},
+      { text: (LANGUAGE === 'dutch' ? '✅ 🇳🇱 nl' : '🇳🇱 nl'), callback_data: 'language_dutch'},
+      { text: (LANGUAGE === 'arabic' ? '✅ 🇦🇪 ae' : '🇦🇪 ae'), callback_data: 'language_arabic'}
     ]
   ];
 
@@ -362,7 +478,7 @@ function showLanguageOptions(chatId) {
 
 function setLanguage(chatId, language) {
   LANGUAGE = language;
-  CacheService.getScriptCache().put('LANGUAGE', language);
+  PropertiesService.getScriptProperties().setProperty('LANGUAGE', language);
   var message = '✅ Language set to: ' + translations[language].name;
 
   showMainMenu(chatId, message);
