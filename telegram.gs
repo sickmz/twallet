@@ -30,8 +30,8 @@ function sendTelegramMessage(chatId, text, options) {
 }
 
 // Delete a message from Telegram chat
- function deleteMessage(chatId, messageId)
- {
+ function deleteMessage(chatId, messageId) {
+  try {
    var data = {
      method: "post",
      payload: {
@@ -40,5 +40,9 @@ function sendTelegramMessage(chatId, text, options) {
        message_id: String(messageId)
      }
    };
+
    UrlFetchApp.fetch('https://api.telegram.org/bot' + TELEGRAM_TOKEN + '/', data);
- }
+  } catch (error) {
+    Logger.log('Error deleting Telegram message: ' + error.message);
+  }
+}
