@@ -4,9 +4,9 @@
 
 This script is a Telegram bot that helps track personal expenses. It is designed to run on Google Apps Script, a scripting platform for Google services. In particular, this script saves data directly to Google Sheets.
 
-To test it:
-- [Demo Telegram bot](https://t.me/TwalletDemoBot)
-- [Demo spreadsheet](https://docs.google.com/spreadsheets/d/1-vqkkmkUpqK-Q-Xr_Ju6W0MFXdfYfdFrDr8ZY5QrwP8/edit#gid=0)
+Demo:
+- [Telegram bot](https://t.me/TwalletDemoBot)
+- [Spreadsheet](https://docs.google.com/spreadsheets/d/1-vqkkmkUpqK-Q-Xr_Ju6W0MFXdfYfdFrDr8ZY5QrwP8/edit#gid=0)
   
 
 ## Features
