@@ -1,5 +1,5 @@
 # <center><p align = "center">🤖</p> </center>
-# Twallet: expense management on google sheets and a telegram bot
+# Twallet: expense management on google sheets with a telegram bot
  
 
 This script is a Telegram bot that helps track personal expenses. It is designed to run on Google Apps Script, a scripting platform for Google services. In particular, this script saves data directly to Google Sheets.
